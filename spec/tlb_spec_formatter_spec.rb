@@ -38,7 +38,7 @@ describe Tlb::TlbSpecFormatter do
     @formatter.should be_a(Spec::Runner::Formatter::SilentFormatter)
   end
 
-  it "should use last heard example_passed/example_failed/example_pending" do
+  it "should use last finished example's time" do
     Time.expects(:now).returns(Time.local( 2010, "jul", 16, 12, 5, 10))
     @formatter.example_group_started(@group_proxy_1)
     Time.expects(:now).returns(Time.local( 2010, "jul", 16, 12, 5, 20))
@@ -67,6 +67,31 @@ describe Tlb::TlbSpecFormatter do
     Tlb.expects(:suite_time).with(@file_1, 19000)
     Tlb.expects(:suite_time).with(@file_2, 25000)
     Tlb.expects(:suite_time).with(@file_3, 100000)
+
+    @formatter.start_dump
+  end
+
+  it "should report suite result to tlb" do
+    @formatter.example_group_started(@group_proxy_1)
+    @formatter.example_passed(Spec::Example::ExampleProxy.new("group1 spec 1", {}, "#{@dir}/group1.rb:12"))
+    @formatter.example_failed(Spec::Example::ExampleProxy.new("group1 spec 2", {}, "#{@dir}/group1.rb:40"), 1, "ignore")
+    @formatter.example_pending(Spec::Example::ExampleProxy.new("group1 spec 3", {}, "#{@dir}/group1.rb:55"), "some reason")
+
+    @formatter.example_group_started(@group_proxy_2)
+    @formatter.example_pending(Spec::Example::ExampleProxy.new("group2 spec 1", {}, "#{@dir}/group2.rb:5"), "some reason")
+    @formatter.example_passed(Spec::Example::ExampleProxy.new("group2 spec 2", {}, "#{@dir}/group2.rb:38"))
+
+    @formatter.example_group_started(@group_proxy_3)
+    @formatter.example_pending(Spec::Example::ExampleProxy.new("group3 spec 1", {}, "#{@dir}/group3.rb:45"), "some reason")
+    @formatter.example_failed(Spec::Example::ExampleProxy.new("group3 spec 2", {}, "#{@dir}/group3.rb:80"), 3, "ignore")
+    @formatter.example_passed(Spec::Example::ExampleProxy.new("group3 spec 3", {}, "#{@dir}/group3.rb:85"))
+    @formatter.example_passed(Spec::Example::ExampleProxy.new("group3 spec 4", {}, "#{@dir}/group3.rb:103"))
+
+    Tlb.stubs(:suite_time)
+
+    Tlb.expects(:suite_result).with(@file_1, true)
+    Tlb.expects(:suite_result).with(@file_2, false)
+    Tlb.expects(:suite_result).with(@file_3, true)
 
     @formatter.start_dump
   end

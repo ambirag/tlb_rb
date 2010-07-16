@@ -1,11 +1,11 @@
 require 'spec/runner/formatter/silent_formatter'
 
 class Tlb::TlbSpecFormatter < Spec::Runner::Formatter::SilentFormatter
-  class SuiteTime < Struct.new(:file_name, :start_time, :end_time)
+  class Suite < Struct.new(:file_name, :start_time, :end_time, :failed)
     MILLS_PER_SEC = 1000
 
     def initialize(file_name, start_time)
-      super(file_name, start_time, start_time)
+      super(file_name, start_time, start_time, false)
     end
 
     def run_time
@@ -18,42 +18,48 @@ class Tlb::TlbSpecFormatter < Spec::Runner::Formatter::SilentFormatter
 
     def report_to_tlb
       Tlb.suite_time(file_name, run_time)
+      Tlb.suite_result(file_name, failed)
     end
   end
 
   def initialize(*args)
     super(*args)
-    @suite_times = []
+    @suites = []
   end
 
   def example_group_started(example_proxy_group)
     file_name = example_file_name(example_proxy_group)
-    @suite_times << Tlb::TlbSpecFormatter::SuiteTime.new(file_name, Time.now)
+    @suites << Tlb::TlbSpecFormatter::Suite.new(file_name, Time.now)
   end
 
   def example_passed(example_proxy)
-    record_end_time(example_proxy)
+    record_suite_data(example_proxy)
   end
 
   def example_failed(example_proxy, *ignore)
-    record_end_time(example_proxy)
+    record_suite_data(example_proxy) do |suite|
+      suite.failed = true
+    end
   end
 
   def example_pending(example_proxy, *ignore)
-    record_end_time(example_proxy)
+    record_suite_data(example_proxy)
   end
 
   def start_dump
-    @suite_times.each do |suite_time|
+    @suites.each do |suite_time|
       suite_time.report_to_tlb
     end
   end
 
   private
-  def record_end_time example_proxy
+  def record_suite_data example_proxy
     file_name = example_file_name(example_proxy)
-    suite_time = @suite_times.find { |suite_time| suite_time.for_file?(file_name) }
-    suite_time && (suite_time.end_time = Time.now)
+    suite = @suites.find { |suite_time| suite_time.for_file?(file_name) }
+    if (suite)
+      suite.end_time = Time.now
+      block_given? && yield(suite)
+    end
   end
 
   def example_file_name example_proxy

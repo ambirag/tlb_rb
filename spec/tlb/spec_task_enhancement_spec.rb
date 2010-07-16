@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), 'spec_helper.rb')
+require File.join(File.dirname(__FILE__), '..', 'spec_helper.rb')
 require 'spec_task_enhancement'
 
 describe Tlb::SpecTaskEnhancement do

@@ -1,9 +1,9 @@
-require File.join(File.dirname(__FILE__), 'spec_helper.rb')
-require 'tlb_spec_formatter'
+require File.join(File.dirname(__FILE__), '..', 'spec_helper.rb')
+require 'spec_formatter'
 require 'spec/example/example_proxy'
 require 'spec/example/example_group_proxy'
 
-describe Tlb::TlbSpecFormatter do
+describe Tlb::SpecFormatter do
   before :all do
     FileUtils.mkdir_p(@dir = "./tmp/formatter_test")
   end
@@ -15,7 +15,7 @@ describe Tlb::TlbSpecFormatter do
     @group_proxy_1 = Spec::Example::ExampleGroupProxy.new(@group_1)
     @group_proxy_2 = Spec::Example::ExampleGroupProxy.new(@group_2)
     @group_proxy_3 = Spec::Example::ExampleGroupProxy.new(@group_3)
-    @formatter = Tlb::TlbSpecFormatter.new(nil, nil)
+    @formatter = Tlb::SpecFormatter.new(nil, nil)
   end
 
   def stubbed_group group_name

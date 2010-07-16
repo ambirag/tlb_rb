@@ -1,6 +1,6 @@
 require 'spec/runner/formatter/silent_formatter'
 
-class Tlb::TlbSpecFormatter < Spec::Runner::Formatter::SilentFormatter
+class Tlb::SpecFormatter < Spec::Runner::Formatter::SilentFormatter
   class Suite < Struct.new(:file_name, :start_time, :end_time, :failed)
     MILLS_PER_SEC = 1000
 
@@ -29,7 +29,7 @@ class Tlb::TlbSpecFormatter < Spec::Runner::Formatter::SilentFormatter
 
   def example_group_started(example_proxy_group)
     file_name = example_file_name(example_proxy_group)
-    @suites << Tlb::TlbSpecFormatter::Suite.new(file_name, Time.now)
+    @suites << Tlb::SpecFormatter::Suite.new(file_name, Time.now)
   end
 
   def example_passed(example_proxy)

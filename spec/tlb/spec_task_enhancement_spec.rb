@@ -12,7 +12,6 @@ describe Tlb::SpecTaskEnhancement do
   end
 
   it "should return balanced and ordered subset" do
-    Tlb.expects(:start_unless_running)
     Tlb.stubs(:balance_and_order).with(['foo.rb', 'bar.rb', 'baz.rb', 'quux.rb']).returns(['quux.rb', 'foo.rb'])
     balanced_list = @klass.new.spec_file_list
     balanced_list.should be_a(Rake::FileList)

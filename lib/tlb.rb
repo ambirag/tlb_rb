@@ -1,7 +1,10 @@
 $LOAD_PATH << File.expand_path(File.join(File.dirname(__FILE__), "tlb"))
+require 'rubygems'
+require 'open4'
 
 module Tlb
   TLB_OUT_FILE = "TLB_OUT_FILE"
+  TLB_ERR_FILE = "TLB_ERR_FILE"
 
   def self.root_dir
     File.expand_path(File.join(File.dirname(__FILE__), ".."))
@@ -12,7 +15,7 @@ module Tlb
   end
 
   def self.server_command
-    "java -jar #{tlb_jar} 2>&1"
+    "java -jar #{tlb_jar}"
   end
 
   def self.write_to_file file_var, clob
@@ -22,8 +25,9 @@ module Tlb
   end
 
   def self.start_server
-    @out = IO.popen(server_command)
-    @pumper = stream_pumper_for(@out, TLB_OUT_FILE)
+    @pid, input, out, err = Open4.popen4(server_command)
+    @out_pumper = stream_pumper_for(out, TLB_OUT_FILE)
+    @err_pumper = stream_pumper_for(err, TLB_ERR_FILE)
   end
 
   def self.stream_pumper_for stream, dump_file
@@ -37,8 +41,10 @@ module Tlb
   end
 
   def self.stop_server
-    Process.kill(Signal.list["TERM"], @out.pid)
-    @pumper[:stop_pumping] = true
-    @pumper.join
+    Process.kill(Signal.list["TERM"], @pid)
+    @out_pumper[:stop_pumping] = true
+    @err_pumper[:stop_pumping] = true
+    @out_pumper.join
+    @err_pumper.join
   end
 end

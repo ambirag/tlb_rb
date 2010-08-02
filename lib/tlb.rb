@@ -34,6 +34,17 @@ module Tlb
     Balancer.send(Balancer::BALANCE_PATH, file_set.join("\n")).split("\n")
   end
 
+  def self.suite_result suite_name, result
+    ensure_server_running
+    Balancer.send(Balancer::SUITE_RESULT_REPORTING_PATH, "#{suite_name}: #{result}")
+  end
+
+  def self.suite_time suite_name, mills
+    ensure_server_running
+    Balancer.send(Balancer::SUITE_TIME_REPORTING_PATH, "#{suite_name}: #{mills}")
+  end
+
+
   def self.ensure_server_running
     server_running? || start_server
   end

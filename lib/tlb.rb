@@ -1,11 +1,38 @@
 $LOAD_PATH << File.expand_path(File.join(File.dirname(__FILE__), "tlb"))
 require 'rubygems'
 require 'open4'
+require 'net/http'
 
 module Tlb
   TLB_OUT_FILE = 'TLB_OUT_FILE'
   TLB_ERR_FILE = 'TLB_ERR_FILE'
   TLB_APP = 'TLB_APP'
+
+  module Balancer
+    TLB_BALANCER_PORT = 'TLB_BALANCER_PORT'
+    BALANCE_PATH = '/balance'
+    SUITE_TIME_REPORTING_PATH = '/suite_time'
+    SUITE_RESULT_REPORTING_PATH = '/suite_result'
+
+    def self.host
+      'localhost'
+    end
+
+    def self.port
+      ENV[TLB_BALANCER_PORT]
+    end
+
+    def self.send path, data
+      Net::HTTP.start(host, port) do |h|
+        h.post(path, data)
+      end.body
+    end
+  end
+
+  def self.balance_and_order file_set
+    ensure_server_running
+    Balancer.send(Balancer::BALANCE_PATH, file_set.join("\n")).split("\n")
+  end
 
   def self.ensure_server_running
     server_running? || start_server
@@ -38,6 +65,7 @@ module Tlb
     @pid, input, out, err = Open4.popen4(server_command)
     @out_pumper = stream_pumper_for(out, TLB_OUT_FILE)
     @err_pumper = stream_pumper_for(err, TLB_ERR_FILE)
+    sleep 1
   end
 
   def self.stream_pumper_for stream, dump_file

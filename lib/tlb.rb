@@ -6,6 +6,14 @@ module Tlb
   TLB_OUT_FILE = "TLB_OUT_FILE"
   TLB_ERR_FILE = "TLB_ERR_FILE"
 
+  def self.ensure_server_running
+    server_running? || start_server
+  end
+
+  def self.server_running?
+    not @pid.nil?
+  end
+
   def self.root_dir
     File.expand_path(File.join(File.dirname(__FILE__), ".."))
   end
@@ -42,6 +50,7 @@ module Tlb
 
   def self.stop_server
     Process.kill(Signal.list["TERM"], @pid)
+    @pid = nil
     @out_pumper[:stop_pumping] = true
     @err_pumper[:stop_pumping] = true
     @out_pumper.join

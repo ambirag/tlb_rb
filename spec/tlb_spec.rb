@@ -77,7 +77,12 @@ describe Tlb do
       File.size(@err_file).should == 0
     end
 
+    Tlb.server_running?.should be_false
+
     Tlb.start_server
+
+    Tlb.server_running?.should be_true
+
 
     sleep 2
 
@@ -108,7 +113,12 @@ describe Tlb do
 
     Process.expects(:kill).with(SIG_TERM, MOCK_PROCESS_ID)
 
+    Tlb.server_running?.should be_true
+
     Tlb.stop_server
+
+    Tlb.server_running?.should be_false
+
 
     out_file_size = File.size(@out_file)
     err_file_size = File.size(@err_file)
@@ -149,11 +159,27 @@ describe Tlb do
   describe :integration_test do
     it "should pump both error and out to the file" do
       Tlb.expects(:server_command).returns(File.join(File.dirname(__FILE__), "fixtures", "foo.sh"))
+      Tlb.server_running?.should be_false
       Tlb.start_server
+      Tlb.server_running?.should be_true
       sleep 2
+      Tlb.server_running?.should be_true
       Tlb.stop_server
+      Tlb.server_running?.should be_false
       File.read(@out_file).should include("hello out\n")
       File.read(@err_file).should include("hello err\n")
     end
+  end
+
+  it "should start server if not running" do
+    Tlb.expects(:server_running?).returns(false)
+    Tlb.expects(:start_server)
+    Tlb.ensure_server_running
+  end
+
+  it "should not start server if running" do
+    Tlb.expects(:server_running?).returns(true)
+    Tlb.expects(:start_server).never
+    Tlb.ensure_server_running
   end
 end

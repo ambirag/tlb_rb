@@ -43,14 +43,6 @@ describe Tlb do
   MOCK_PROCESS_ID = 33040
   SIG_TERM = 15
 
-  def tmp_file file_name
-    path = File.join(Dir.tmpdir, file_name)
-    file = File.new(path, 'w')
-    File.truncate path, 0
-    file.close
-    file
-  end
-
   it "should wire-up streams for server" do
     Tlb.expects(:server_command).returns("foo bar")
 
@@ -181,5 +173,33 @@ describe Tlb do
     Tlb.expects(:server_running?).returns(true)
     Tlb.expects(:start_server).never
     Tlb.ensure_server_running
+  end
+
+  describe "env var" do
+    before do
+      module Open4
+        class << self
+          alias_method :old_popen4, :popen4
+        end
+
+        def self.popen4 command
+          ENV['TLB_APP'].should == "com.github.tlb.balancer.BalancerInitializer"
+        end
+      end
+    end
+
+    after do
+      module Open4
+        class << self
+          alias_method :popen4, :old_popen4
+        end
+      end
+    end
+
+    it "should set TLB_APP to point to balancer before starting the server" do
+      ENV['TLB_APP'] = "foo"
+      Tlb.stubs(:server_command).returns("foo bar")
+      Tlb.start_server
+    end
   end
 end

@@ -3,8 +3,9 @@ require 'rubygems'
 require 'open4'
 
 module Tlb
-  TLB_OUT_FILE = "TLB_OUT_FILE"
-  TLB_ERR_FILE = "TLB_ERR_FILE"
+  TLB_OUT_FILE = 'TLB_OUT_FILE'
+  TLB_ERR_FILE = 'TLB_ERR_FILE'
+  TLB_APP = 'TLB_APP'
 
   def self.ensure_server_running
     server_running? || start_server
@@ -33,6 +34,7 @@ module Tlb
   end
 
   def self.start_server
+    ENV[TLB_APP] = 'com.github.tlb.balancer.BalancerInitializer'
     @pid, input, out, err = Open4.popen4(server_command)
     @out_pumper = stream_pumper_for(out, TLB_OUT_FILE)
     @err_pumper = stream_pumper_for(err, TLB_ERR_FILE)

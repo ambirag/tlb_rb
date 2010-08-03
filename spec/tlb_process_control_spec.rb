@@ -7,6 +7,7 @@ describe Tlb do
   before do
     ENV[Tlb::TLB_OUT_FILE] = (@out_file = tmp_file('tlb_out_file').path)
     ENV[Tlb::TLB_ERR_FILE] = (@err_file = tmp_file('tlb_err_file').path)
+    Tlb::Balancer.stubs(:wait_for_start)
   end
 
   class TimedIO
@@ -59,7 +60,6 @@ describe Tlb do
     err_stream = TimedIO.new("err", 1) do
       err_written_to = true
     end
-
 
     Open4.expects(:popen4).with("foo bar").returns([MOCK_PROCESS_ID, in_stream, out_stream, err_stream])
 

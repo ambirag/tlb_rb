@@ -24,8 +24,21 @@ module Tlb
 
     def self.send path, data
       Net::HTTP.start(host, port) do |h|
-        h.post(path, data)
-      end.body
+        res = h.post(path, data)
+        res.value
+        res.body
+      end
+    end
+
+    def self.wait_for_start
+      loop do
+        begin
+          TCPSocket.new(host, port)
+          break
+        rescue
+          #ignore
+        end
+      end
     end
   end
 
@@ -43,7 +56,6 @@ module Tlb
     ensure_server_running
     Balancer.send(Balancer::SUITE_TIME_REPORTING_PATH, "#{suite_name}: #{mills}")
   end
-
 
   def self.ensure_server_running
     server_running? || start_server
@@ -76,7 +88,7 @@ module Tlb
     @pid, input, out, err = Open4.popen4(server_command)
     @out_pumper = stream_pumper_for(out, TLB_OUT_FILE)
     @err_pumper = stream_pumper_for(err, TLB_ERR_FILE)
-    sleep 1
+    Balancer.wait_for_start
   end
 
   def self.stream_pumper_for stream, dump_file

@@ -16,10 +16,11 @@ describe Tlb do
     def initialize stream_name, after_every, &on_write
       @io = StringIO.new
       @sem = Mutex.new
-      @next = Time.now
+      @now = @next = 0
       @thd = Thread.new do
         loop do
-          @now = Time.now
+          @now += 1
+          sleep 1
           if @now > @next
             @next = @now + after_every
             @sem.synchronize do

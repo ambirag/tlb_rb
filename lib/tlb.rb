@@ -30,11 +30,21 @@ module Tlb
       end
     end
 
+    def self.get path
+      Net::HTTP.get_response(host, path, port).body
+    end
+
+    def self.running?
+      get("/control/status") == "RUNNING"
+    rescue
+      false
+    end
+
     def self.wait_for_start
       loop do
         begin
           TCPSocket.new(host, port)
-          break
+          break if running?
         rescue
           #ignore
         end
@@ -57,8 +67,12 @@ module Tlb
     Balancer.send(Balancer::SUITE_TIME_REPORTING_PATH, "#{suite_name}: #{mills}")
   end
 
+  def self.fail_as_balancer_is_not_running
+    raise "Balancer server must be started before tests are run."
+  end
+
   def self.ensure_server_running
-    server_running? || start_server
+    server_running? || fail_as_balancer_is_not_running
   end
 
   def self.server_running?

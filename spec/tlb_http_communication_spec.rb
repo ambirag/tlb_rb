@@ -39,53 +39,60 @@ describe Tlb do
 
     it "should balance for first partition" do
       ENV['PARTITION_NUMBER'] = '1'
+      Tlb.start_server
       Tlb.balance_and_order(["foo/bar.rb", "foo/baz.rb", "bar/foo.rb", "bar/quux.rb"]).should == ["foo/bar.rb", "foo/baz.rb"]
     end
 
     it "should balance for second partition" do
       ENV['PARTITION_NUMBER'] = '2'
+      Tlb.start_server
       Tlb.balance_and_order(["foo/bar.rb", "foo/baz.rb", "bar/foo.rb", "bar/quux.rb"]).should == ["bar/foo.rb", "bar/quux.rb"]
     end
 
-    it "should publish suite result" do
-      Tlb.suite_result("foo/bar.rb", true)
-      Tlb.suite_result("foo/baz.rb", false)
-      Tlb.suite_result("foo/quux.rb", true)
-      get_from_tlb_server("suite_result").should include("foo/bar.rb: true", "foo/baz.rb: false", "foo/quux.rb: true")
-    end
+    describe "thats already running" do
+      before do
+        Tlb.start_server
+      end
 
-    it "should publish suite time" do
-      Tlb.suite_time("foo/bar.rb", 102)
-      Tlb.suite_time("foo/baz.rb", 3599)
-      Tlb.suite_time("foo/quux.rb", 2010)
-      get_from_tlb_server("suite_time").should include("foo/bar.rb: 102", "foo/baz.rb: 3599", "foo/quux.rb: 2010")
-    end
+      it "should publish suite result" do
+        Tlb.suite_result("foo/bar.rb", true)
+        Tlb.suite_result("foo/baz.rb", false)
+        Tlb.suite_result("foo/quux.rb", true)
+        get_from_tlb_server("suite_result").should include("foo/bar.rb: true", "foo/baz.rb: false", "foo/quux.rb: true")
+      end
 
-    def get_from_tlb_server path
-      body = Net::HTTP.get(URI.parse("#{URL}/#{JOB_NAME}/#{path}"))
-      body.split("\n")
-    end
+      it "should publish suite time" do
+        Tlb.suite_time("foo/bar.rb", 102)
+        Tlb.suite_time("foo/baz.rb", 3599)
+        Tlb.suite_time("foo/quux.rb", 2010)
+        get_from_tlb_server("suite_time").should include("foo/bar.rb: 102", "foo/baz.rb: 3599", "foo/quux.rb: 2010")
+      end
 
-    it "should use send method to balance" do
-      Tlb::Balancer.expects(:send).with(Tlb::Balancer::BALANCE_PATH, "foo/bar.rb\nfoo/baz.rb").returns("foo\nbar")
-      Tlb.balance_and_order(["foo/bar.rb", "foo/baz.rb"]).should == ["foo", "bar"]
-    end
+      def get_from_tlb_server path
+        body = Net::HTTP.get(URI.parse("#{URL}/#{JOB_NAME}/#{path}"))
+        body.split("\n")
+      end
 
-    it "should use send method to balance" do
-      Tlb::Balancer.expects(:send).with(Tlb::Balancer::SUITE_RESULT_REPORTING_PATH, "foo/bar.rb: false")
-      Tlb.suite_result("foo/bar.rb", false)
-    end
+      it "should use send method to balance" do
+        Tlb::Balancer.expects(:send).with(Tlb::Balancer::BALANCE_PATH, "foo/bar.rb\nfoo/baz.rb").returns("foo\nbar")
+        Tlb.balance_and_order(["foo/bar.rb", "foo/baz.rb"]).should == ["foo", "bar"]
+      end
 
-    it "should use send method to balance" do
-      Tlb::Balancer.expects(:send).with(Tlb::Balancer::SUITE_TIME_REPORTING_PATH, "foo/bar.rb: 42")
-      Tlb.suite_time("foo/bar.rb", 42)
-    end
+      it "should use send method to post results" do
+        Tlb::Balancer.expects(:send).with(Tlb::Balancer::SUITE_RESULT_REPORTING_PATH, "foo/bar.rb: false")
+        Tlb.suite_result("foo/bar.rb", false)
+      end
 
-    it "should raise exception when call to tlb fails" do
-      Tlb.start_server
-      lambda do
-        Tlb::Balancer.send("/foo", "bar")
-      end.should raise_error(Net::HTTPServerException, '404 "The server has not found anything matching the request URI"')
+      it "should use send method to post time" do
+        Tlb::Balancer.expects(:send).with(Tlb::Balancer::SUITE_TIME_REPORTING_PATH, "foo/bar.rb: 42")
+        Tlb.suite_time("foo/bar.rb", 42)
+      end
+
+      it "should raise exception when call to tlb fails" do
+        lambda do
+          Tlb::Balancer.send("/foo", "bar")
+        end.should raise_error(Net::HTTPServerException, '404 "The server has not found anything matching the request URI"')
+      end
     end
 
     it "should wait for balancer server to come up before returning from start_server" do
@@ -95,6 +102,13 @@ describe Tlb do
   end
 
   describe :wait_for_server_to_start do
+    class CtrlStatus < WEBrick::HTTPServlet::AbstractServlet
+      def do_GET(request, response)
+        response.status = 200
+        response['Content-Type'] = 'text/plain'
+        response.body = 'RUNNING'
+      end
+    end
     before do
       @server = nil
       ENV['TLB_BALANCER_PORT'] = TLB_BALANCER_PORT
@@ -110,7 +124,11 @@ describe Tlb do
       wait_thread = Thread.new do
         sleep 3
         @wait_completed = true
-        @server = WEBrick::HTTPServer.new(:Port => TLB_BALANCER_PORT)
+        @server = WEBrick::HTTPServer.new(:Port => TLB_BALANCER_PORT,
+                                          :Logger => WEBrick::BasicLog.new(tmp_file('tlb_webrick_log').path),
+                                          :AccessLog => WEBrick::BasicLog.new(tmp_file('tlb_webrick_access_log').path))
+        @server.mount '/control/status', CtrlStatus
+        @server.start
       end
       @wait_completed.should be_false
       Tlb::Balancer.wait_for_start

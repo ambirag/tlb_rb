@@ -50,10 +50,9 @@ describe Tlb do
     end
   end
 
-  it "should start server if not running" do
+  it "should fail of server not running" do
     Tlb.expects(:server_running?).returns(false)
-    Tlb.expects(:start_server)
-    Tlb.ensure_server_running
+    lambda { Tlb.ensure_server_running }.should raise_error('Balancer server must be started before tests are run.')
   end
 
   it "should not start server if running" do

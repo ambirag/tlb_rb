@@ -10,131 +10,17 @@ describe Tlb do
     Tlb::Balancer.stubs(:wait_for_start)
   end
 
-  class TimedIO
-    attr_reader :sem
-
-    def initialize stream_name, after_every, &on_write
-      @io = StringIO.new
-      @sem = Mutex.new
-      @now = @next = 0
-      @thd = Thread.new do
-        loop do
-          @now += 1
-          sleep 1
-          if @now > @next
-            @next = @now + after_every
-            @sem.synchronize do
-              orig_pos = @io.pos
-              @io.pos = @io.length
-              @io.write "#{stream_name}#{Time.now}\n"
-              @io.pos = orig_pos
-              on_write.call
-            end
-          end
-        end
-      end
-    end
-
-    def method_missing method, *args
-      @sem.synchronize do
-        @io.send(method, *args)
-      end
-    end
-  end
-
   MOCK_PROCESS_ID = 33040
   SIG_TERM = 15
 
-  it "should wire-up streams for server" do
-    Tlb.expects(:server_command).returns("foo bar")
-
-    out_written_to = err_written_to = false
-
-    time_before_io_created = Time.now
-
-    in_stream = StringIO.new("input stream")
-
-    out_stream = TimedIO.new("out", 1) do
-      out_written_to = true
-    end
-
-    err_stream = TimedIO.new("err", 1) do
-      err_written_to = true
-    end
-
-    Open4.expects(:popen4).with("foo bar").returns([MOCK_PROCESS_ID, in_stream, out_stream, err_stream])
-
-    3.times do
-      sleep 1
-      File.size(@out_file).should == 0
-      File.size(@err_file).should == 0
-    end
-
-    Tlb.server_running?.should be_false
-
-    Tlb.start_server
-
-    Tlb.server_running?.should be_true
-
-
-    sleep 2
-
-    out_file_size = err_file_size = 0
-
-    out_stream.sem.synchronize do
-      err_stream.sem.synchronize do
-        File.size(@out_file).should > out_file_size
-        out_file_size = File.size(@out_file)
-        out_written_to = false
-
-        File.size(@err_file).should > err_file_size
-        err_file_size = File.size(@err_file)
-        err_written_to = false
-      end
-    end
-
-    sleep 2
-
-    out_stream.sem.synchronize do
-      err_stream.sem.synchronize do
-        File.size(@out_file).should > out_file_size
-        out_file_size = File.size(@out_file)
-        File.size(@err_file).should > err_file_size
-        out_file_size = File.size(@err_file)
-      end
-    end
+  it "should terminate process when stop called" do
+    Tlb.instance_variable_set('@pid', MOCK_PROCESS_ID)
+    Tlb.instance_variable_set('@out_pumper', Thread.new { })
+    Tlb.instance_variable_set('@err_pumper', Thread.new { })
 
     Process.expects(:kill).with(SIG_TERM, MOCK_PROCESS_ID)
 
-    Tlb.server_running?.should be_true
-
     Tlb.stop_server
-
-    Tlb.server_running?.should be_false
-
-
-    out_file_size = File.size(@out_file)
-    err_file_size = File.size(@err_file)
-
-
-    sleep 2
-
-    File.size(@out_file).should == out_file_size
-    File.size(@err_file).should == err_file_size
-
-    out_content = File.read(@out_file)
-    err_content = File.read(@err_file)
-
-
-    times_of_output(out_content, "out").inject(time_before_io_created - 1) do |old, new|
-      old.should <= new
-      new
-    end
-
-    times_of_output(err_content, "err").inject(time_before_io_created - 1) do |old, new|
-      old.should <= new
-      new
-    end
   end
 
   def times_of_output content, stream_name

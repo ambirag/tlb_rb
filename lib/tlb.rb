@@ -76,7 +76,7 @@ module Tlb
   end
 
   def self.server_running?
-    not @pid.nil?
+    Balancer.running?
   end
 
   def self.root_dir

@@ -38,14 +38,11 @@ describe Tlb do
 
   describe :integration_test do
     it "should pump both error and out to the file" do
+      Tlb.stubs(:wait_for_start)
       Tlb.expects(:server_command).returns(File.join(File.dirname(__FILE__), "fixtures", "foo.sh"))
-      Tlb.server_running?.should be_false
       Tlb.start_server
-      Tlb.server_running?.should be_true
       sleep 2
-      Tlb.server_running?.should be_true
       Tlb.stop_server
-      Tlb.server_running?.should be_false
       File.read(@out_file).should include("hello out\n")
       File.read(@err_file).should include("hello err\n")
     end

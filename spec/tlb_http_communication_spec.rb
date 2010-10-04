@@ -17,6 +17,12 @@ describe Tlb do
     Process.kill(Signal.list['KILL'], @pid)
   end
 
+  it "should wait for balancer server to come up before returning from start_server" do
+    Tlb::Balancer.expects(:wait_for_start)
+    Open4.stubs(:popen4)
+    Tlb.start_server
+  end
+
   describe "using server" do
     before do
       ENV[Tlb::TLB_OUT_FILE] = (@out_file = tmp_file('tlb_out_file').path)
@@ -93,11 +99,6 @@ describe Tlb do
           Tlb::Balancer.send("/foo", "bar")
         end.should raise_error(Net::HTTPServerException, '404 "The server has not found anything matching the request URI"')
       end
-    end
-
-    it "should wait for balancer server to come up before returning from start_server" do
-      Tlb::Balancer.expects(:wait_for_start)
-      Tlb.start_server
     end
   end
 

@@ -19,6 +19,7 @@ describe Tlb do
     Tlb.instance_variable_set('@err_pumper', Thread.new { })
 
     Process.expects(:kill).with(SIG_TERM, MOCK_PROCESS_ID)
+    Process.expects(:wait).with()
 
     Tlb.stop_server
   end

@@ -122,5 +122,6 @@ module Tlb
     @err_pumper[:stop_pumping] = true
     @out_pumper.join
     @err_pumper.join
+    Process.wait
   end
 end

@@ -17,8 +17,9 @@ class Tlb::SpecFormatter < Spec::Runner::Formatter::SilentFormatter
     end
 
     def report_to_tlb
-      Tlb.suite_time(file_name, run_time)
-      Tlb.suite_result(file_name, failed)
+      rel_file_name = Tlb.relative_file_path(file_name)
+      Tlb.suite_time(rel_file_name, run_time)
+      Tlb.suite_result(rel_file_name, failed)
     end
   end
 

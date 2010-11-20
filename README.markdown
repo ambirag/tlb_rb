@@ -15,16 +15,16 @@ Please refer the [sample_projects](http://github.com/test-load-balancer/sample_p
 
 Usually, something equivallent of this in one of your Rake files should suffice:
 
-  PATH_TO_TLB = File.join(RAILS_ROOT, 'vendor', 'plugins', 'tlb_rb', 'lib', 'tlb')
-  require PATH_TO_TLB
-  require File.join(PATH_TO_TLB, 'spec_task')
-
-  Tlb::SpecTask.new(:balanced_specs) do |t|
-    t.spec_files = FileList['spec/**/*_spec.rb']
-    t.spec_opts << "--require #{PATH_TO_TLB},#{File.join(PATH_TO_TLB, 'spec_formatter')} --format 'Tlb::SpecFormatter:/dev/null' --format nested"
-  end
-
-  desc "load balanced spec"
-  task :run_balanced => ['tlb:start', :balanced_specs]
-
+    PATH_TO_TLB = File.join(RAILS_ROOT, 'vendor', 'plugins', 'tlb_rb', 'lib', 'tlb')
+    require PATH_TO_TLB
+    require File.join(PATH_TO_TLB, 'spec_task')
+  
+    Tlb::SpecTask.new(:balanced_specs) do |t|
+      t.spec_files = FileList['spec/**/*_spec.rb']
+      t.spec_opts << "--require #{PATH_TO_TLB},#{File.join(PATH_TO_TLB, 'spec_formatter')} --format 'Tlb::SpecFormatter:/dev/null' --format nested"
+    end
+  
+    desc "load balanced spec"
+    task :run_balanced => ['tlb:start', :balanced_specs]
+  
 Where run_balanced is the task you invoke at the top-level(invoked externally).

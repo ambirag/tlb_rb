@@ -97,4 +97,14 @@ describe Tlb::SpecFormatter do
 
     @formatter.start_dump
   end
+
+  it "should report suite result for last heard file name when it received example_proxy having no location" do
+    @formatter.example_group_started(@group_proxy_1)
+    @formatter.example_failed(Spec::Example::ExampleProxy.new("before(:all)"))
+    Tlb.stubs(:suite_time)
+
+    Tlb.expects(:suite_result).with(@file_1, true)
+
+    @formatter.start_dump
+  end
 end

@@ -28,3 +28,6 @@ Usually, something equivallent of this in one of your Rake files should suffice:
     task :run_balanced => ['tlb:start', :balanced_specs]
   
 Where run_balanced is the task you invoke at the top-level(invoked externally).
+
+## RSpec version compatibility
+  The branch '__master__' is __RSpec-2.x__ compatible. If you use __RSpec-1__(i.e. __1.3.x__ etc, please use branch named '__rspec-1__'. If you come across any bugs with eiher RSpec-2 or 1 support, please post it as an bug on the issue tracker on github project page.

@@ -1,7 +1,7 @@
-require 'spec/rake/spectask'
+require 'rspec/core/rake_task'
 
-Spec::Rake::SpecTask.new(:spec) do |t|
-  t.spec_files = FileList['spec/**/*_spec.rb']
+RSpec::Core::RakeTask.new(:spec) do |t|
+  t.pattern = 'spec/**/*_spec.rb'
 end
 
 task :build_tlb do

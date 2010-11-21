@@ -1,6 +1,6 @@
-require 'spec/runner/formatter/silent_formatter'
+require 'rspec/core/formatters/base_formatter'
 
-class Tlb::SpecFormatter < Spec::Runner::Formatter::SilentFormatter
+class Tlb::SpecFormatter < RSpec::Core::Formatters::BaseFormatter
   class Suite < Struct.new(:file_name, :start_time, :end_time, :failed)
     MILLS_PER_SEC = 1000
 
@@ -17,9 +17,8 @@ class Tlb::SpecFormatter < Spec::Runner::Formatter::SilentFormatter
     end
 
     def report_to_tlb
-      rel_file_name = Tlb.relative_file_path(file_name)
-      Tlb.suite_time(rel_file_name, run_time)
-      Tlb.suite_result(rel_file_name, failed)
+      Tlb.suite_time(file_name, run_time)
+      Tlb.suite_result(file_name, failed)
     end
   end
 
@@ -37,13 +36,13 @@ class Tlb::SpecFormatter < Spec::Runner::Formatter::SilentFormatter
     record_suite_data(example_proxy)
   end
 
-  def example_failed(example_proxy, *ignore)
+  def example_failed(example_proxy)
     record_suite_data(example_proxy) do |suite|
       suite.failed = true
     end
   end
 
-  def example_pending(example_proxy, *ignore)
+  def example_pending(example_proxy)
     record_suite_data(example_proxy)
   end
 
@@ -64,6 +63,6 @@ class Tlb::SpecFormatter < Spec::Runner::Formatter::SilentFormatter
   end
 
   def example_file_name example_proxy
-    example_proxy.location ? (@last_known_file = example_proxy.location.scan(/^(.+?):\d+$/).flatten.first) : @last_known_file
+    Tlb.relative_file_path(example_proxy.file_path)
   end
 end

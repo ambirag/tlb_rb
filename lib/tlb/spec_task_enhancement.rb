@@ -1,10 +1,10 @@
 module Tlb::SpecTaskEnhancement
   def self.included base
     base.class_eval do
-      alias_method :rspec_spec_file_list, :spec_file_list
+      alias_method :rspec_files_to_run, :files_to_run
 
-      def spec_file_list
-        balanced_and_reordered = Tlb.balance_and_order(rspec_spec_file_list.to_a)
+      def files_to_run
+        balanced_and_reordered = Tlb.balance_and_order(rspec_files_to_run.to_a)
         FileList[*balanced_and_reordered]
       end
     end

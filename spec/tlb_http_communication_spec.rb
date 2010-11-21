@@ -46,19 +46,13 @@ describe Tlb do
     it "should balance for first partition" do
       ENV['PARTITION_NUMBER'] = '1'
       Tlb.start_server
-      Tlb.balance_and_order(["foo/bar.rb", "foo/baz.rb", "bar/foo.rb", "bar/quux.rb"]).should == ["./foo/bar.rb", "./foo/baz.rb"]
+      Tlb.balance_and_order(["./foo/bar.rb", "./foo/baz.rb", "./bar/foo.rb", "./bar/quux.rb"]).should == ["./foo/bar.rb", "./foo/baz.rb"]
     end
 
     it "should balance for second partition" do
       ENV['PARTITION_NUMBER'] = '2'
       Tlb.start_server
-      Tlb.balance_and_order(["foo/bar.rb", "foo/baz.rb", "bar/foo.rb", "bar/quux.rb"]).should == ["./bar/foo.rb", "./bar/quux.rb"]
-    end
-
-    it "should balance with file path names relative to working dir" do
-      ENV['PARTITION_NUMBER'] = '1'
-      Tlb.start_server
-      Tlb.balance_and_order(["foo/hi/../baz/quux/../hello/../../bar.rb", "foo/bar/../baz.rb", "bar/baz/quux/../../foo.rb", "bar/quux.rb"]).should == ["./foo/bar.rb", "./foo/baz.rb"]
+      Tlb.balance_and_order(["./foo/bar.rb", "./foo/baz.rb", "./bar/foo.rb", "./bar/quux.rb"]).should == ["./bar/foo.rb", "./bar/quux.rb"]
     end
 
     describe "thats already running" do
@@ -86,7 +80,7 @@ describe Tlb do
       end
 
       it "should use send method to balance" do
-        Tlb::Balancer.expects(:send).with(Tlb::Balancer::BALANCE_PATH, "./foo/bar.rb\n./foo/baz.rb").returns("foo\nbar")
+        Tlb::Balancer.expects(:send).with(Tlb::Balancer::BALANCE_PATH, "foo/bar.rb\nfoo/baz.rb").returns("foo\nbar")
         Tlb.balance_and_order(["foo/bar.rb", "foo/baz.rb"]).should == ["foo", "bar"]
       end
 

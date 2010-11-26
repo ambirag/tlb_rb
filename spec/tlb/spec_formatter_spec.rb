@@ -98,6 +98,11 @@ describe Tlb::SpecFormatter do
     @formatter.start_dump
   end
 
+  it "should parse example_file_name" do
+    @formatter.send(:example_file_name, Spec::Example::ExampleProxy.new("some method call inside spec", {}, "./spec/baz_quux.rb:9")).should == "./spec/baz_quux.rb"
+    @formatter.send(:example_file_name, Spec::Example::ExampleProxy.new("some method call inside spec", {}, "./spec/foo_bar_baz.rb:9:in `should_quux'")).should == "./spec/foo_bar_baz.rb"
+  end
+
   it "should report suite result for last heard file name when it received example_proxy having no location" do
     @formatter.example_group_started(@group_proxy_1)
     @formatter.example_failed(Spec::Example::ExampleProxy.new("before(:all)"))

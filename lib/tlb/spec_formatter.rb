@@ -64,6 +64,6 @@ class Tlb::SpecFormatter < Spec::Runner::Formatter::SilentFormatter
   end
 
   def example_file_name example_proxy
-    example_proxy.location ? (@last_known_file = example_proxy.location.scan(/^(.+?):\d+$/).flatten.first) : @last_known_file
+    example_proxy.location ? (@last_known_file = example_proxy.location.scan(/^(.+?):\d+(:.*)?$/).flatten.first) : @last_known_file
   end
 end

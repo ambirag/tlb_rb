@@ -69,7 +69,7 @@ describe Tlb::SpecFormatter do
     @formatter.start_dump
   end
 
-  it "should report suite result to tlb" do
+  it "should report suite result" do
     @formatter.example_group_started(@group_proxy_1)
     @formatter.example_passed(RSpec::Core::Example.new(@group_proxy_1, "some line 12", {:caller => "#{@dir}/baz/group1.rb:12"}))
     @formatter.example_failed(RSpec::Core::Example.new(@group_proxy_1, "some line 40", {:caller => "#{@dir}/baz/group1.rb:40"}))

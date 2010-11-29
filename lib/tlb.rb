@@ -1,3 +1,4 @@
+$LOAD_PATH << File.expand_path(File.join(File.dirname(__FILE__), "tlb"))
 $LOAD_PATH << File.expand_path(File.join(File.dirname(__FILE__), "tlb", "rspec"))
 $LOAD_PATH << File.expand_path(File.join(File.dirname(__FILE__), "tlb", "test_unit"))
 

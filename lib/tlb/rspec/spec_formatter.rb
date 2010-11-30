@@ -1,5 +1,5 @@
 require 'rspec/core/formatters/base_formatter'
-require 'run_data'
+require 'tlb/run_data'
 
 class Tlb::RSpec::SpecFormatter < RSpec::Core::Formatters::BaseFormatter
   include Tlb::RunData

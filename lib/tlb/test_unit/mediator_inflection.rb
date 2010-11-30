@@ -1,5 +1,5 @@
-require 'test_splitter'
-require 'test_observer'
+require 'tlb/test_unit/test_splitter'
+require 'tlb/test_unit/test_observer'
 require 'test/unit/ui/testrunnermediator'
 
 module Tlb::TestUnit::MediatorInflection

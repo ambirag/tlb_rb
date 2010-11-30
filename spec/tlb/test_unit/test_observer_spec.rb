@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'spec_helper')
 require 'test/unit/ui/testrunnermediator'
-require 'test_observer'
+require 'tlb/test_unit/test_observer'
 
 describe Tlb::TestUnit::TestObserver do
   before do

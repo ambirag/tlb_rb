@@ -1,4 +1,4 @@
-require 'run_data'
+require 'tlb/run_data'
 
 module Tlb::TestUnit::TestObserver
   class TestUnitRunData

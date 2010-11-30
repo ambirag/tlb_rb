@@ -1,5 +1,5 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'spec_helper')
-require 'test_task'
+require 'tlb/test_unit/test_task'
 
 describe Tlb::TestUnit::TestTask do
   it "should be a rake-testtask" do

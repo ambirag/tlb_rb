@@ -1,5 +1,5 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'spec_helper')
-require 'mediator_inflection'
+require 'tlb/test_unit/mediator_inflection'
 
 describe Tlb::TestUnit::MediatorInflection do
   it "should be included in test-runner-mediator" do

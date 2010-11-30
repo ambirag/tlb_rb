@@ -1,5 +1,5 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'spec_helper.rb')
-require 'spec_task_enhancement'
+require 'tlb/rspec/spec_task_enhancement'
 
 describe Tlb::RSpec::SpecTaskEnhancement do
   before do

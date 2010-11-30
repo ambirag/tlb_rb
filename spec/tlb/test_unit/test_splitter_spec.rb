@@ -1,5 +1,5 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'spec_helper')
-require 'test_splitter'
+require 'tlb/test_unit/test_splitter'
 require 'test/unit/testsuite'
 
 describe Tlb::TestUnit::TestSplitter do

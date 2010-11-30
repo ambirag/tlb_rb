@@ -1,5 +1,5 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'spec_helper.rb')
-require 'spec_formatter'
+require 'tlb/rspec/spec_formatter'
 require 'rspec/core/example'
 require 'rspec/core/metadata'
 require 'rspec/core/example_group'

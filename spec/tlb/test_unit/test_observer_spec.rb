@@ -5,15 +5,12 @@ require 'test_observer'
 describe Tlb::TestObserver do
   before do
     @mediator = Class.new(Test::Unit::UI::TestRunnerMediator) do
-      def run_suite
-        :foo_bar
-      end
       include Tlb::TestObserver
     end.new(nil)
   end
 
   it "should report suite time" do
-    @mediator.run_suite.should == :foo_bar
+    @mediator.register_observers
 
     #suite one
     Time.stubs(:now).returns(Time.local( 2010, "jul", 16, 12, 5, 10))
@@ -69,7 +66,7 @@ describe Tlb::TestObserver do
   end
 
   it "should report suite result" do
-    @mediator.run_suite.should == :foo_bar
+    @mediator.register_observers
 
     @mediator.notify_listeners(Test::Unit::TestSuite::STARTED, 'SuiteOne')
     @mediator.notify_listeners(Test::Unit::TestCase::STARTED, 'test_foo(SuiteOne)')

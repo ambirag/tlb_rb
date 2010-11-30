@@ -2,10 +2,10 @@ require File.join(File.dirname(__FILE__), '..', '..', 'spec_helper')
 require 'test/unit/ui/testrunnermediator'
 require 'test_observer'
 
-describe Tlb::TestObserver do
+describe Tlb::TestUnit::TestObserver do
   before do
     @mediator = Class.new(Test::Unit::UI::TestRunnerMediator) do
-      include Tlb::TestObserver
+      include Tlb::TestUnit::TestObserver
     end.new(nil)
   end
 

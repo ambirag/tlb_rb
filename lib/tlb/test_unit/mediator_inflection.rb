@@ -2,14 +2,14 @@ require 'test_splitter'
 require 'test_observer'
 require 'test/unit/ui/testrunnermediator'
 
-module Tlb::MediatorInflection
+module Tlb::TestUnit::MediatorInflection
   def self.included base
     base.send(:alias_method, :run_suite_without_tlb, :run_suite)
     base.send(:remove_method, :run_suite)
     base.send(:include, InstanceMethods)
 
-    base.send(:include, Tlb::TestSplitter)
-    base.send(:include, Tlb::TestObserver)
+    base.send(:include, Tlb::TestUnit::TestSplitter)
+    base.send(:include, Tlb::TestUnit::TestObserver)
   end
 
   module InstanceMethods
@@ -23,6 +23,5 @@ module Tlb::MediatorInflection
 end
 
 Test::Unit::UI::TestRunnerMediator.class_eval do
-  include Tlb::MediatorInflection
+  include Tlb::TestUnit::MediatorInflection
 end
-

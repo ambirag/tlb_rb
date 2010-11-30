@@ -1,4 +1,4 @@
-module Tlb::TestSplitter
+module Tlb::TestUnit::TestSplitter
   def prune_suite
     name_suite_map = @suite.tests.inject({}) { |map, test| map[test.name] = test; map }
     names_to_run = Tlb.balance_and_order(@suite.tests.map { |test| test.name })

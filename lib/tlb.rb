@@ -55,6 +55,12 @@ module Tlb
     end
   end
 
+  module RSpec
+  end
+
+  module TestUnit
+  end
+
   def self.relative_file_path file_name
     abs_file_name = File.expand_path(file_name)
     rel_file_name = abs_file_name.sub(/^#{Dir.pwd}/, '.')

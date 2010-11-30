@@ -4,7 +4,7 @@ require 'rspec/core/example'
 require 'rspec/core/metadata'
 require 'rspec/core/example_group'
 
-describe Tlb::SpecFormatter do
+describe Tlb::RSpec::SpecFormatter do
   before :all do
     FileUtils.mkdir_p(@dir = Dir.pwd + "/tmp/foo/../bar/..")
   end
@@ -19,7 +19,7 @@ describe Tlb::SpecFormatter do
     @group_proxy_2.instance_variable_set('@metadata', RSpec::Core::Metadata.new().process('parent group 2', :caller => ["#{group_2_file}:3"]))
     @group_proxy_3 = RSpec::Core::ExampleGroup.describe("group3")
     @group_proxy_3.instance_variable_set('@metadata', RSpec::Core::Metadata.new().process('parent group 3', :caller => ["#{group_3_file}:9"]))
-    @formatter = Tlb::SpecFormatter.new(nil)
+    @formatter = Tlb::RSpec::SpecFormatter.new(nil)
   end
 
   def stubbed_group group_name

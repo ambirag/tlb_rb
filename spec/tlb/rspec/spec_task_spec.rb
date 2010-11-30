@@ -1,10 +1,10 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'spec_helper.rb')
 require 'spec_task'
 
-describe Tlb::SpecTask do
+describe Tlb::RSpec::SpecTask do
 
   it "should return balanced and ordered subset" do
-    @task = Tlb::SpecTask.new
+    @task = Tlb::RSpec::SpecTask.new
     Tlb.stubs(:start_unless_running)
     @task.expects(:rspec_files_to_run).returns(FileList['foo.rb', 'bar.rb', 'baz.rb', 'quux.rb'])
     Tlb.stubs(:balance_and_order).with(['foo.rb', 'bar.rb', 'baz.rb', 'quux.rb']).returns(['quux.rb', 'foo.rb'])

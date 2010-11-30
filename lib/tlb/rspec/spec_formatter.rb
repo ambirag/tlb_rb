@@ -1,7 +1,7 @@
 require 'rspec/core/formatters/base_formatter'
 require 'run_data'
 
-class Tlb::SpecFormatter < RSpec::Core::Formatters::BaseFormatter
+class Tlb::RSpec::SpecFormatter < RSpec::Core::Formatters::BaseFormatter
   include Tlb::RunData
 
   def initialize(*args)

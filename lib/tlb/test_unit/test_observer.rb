@@ -1,6 +1,6 @@
 require 'run_data'
 
-module Tlb::TestObserver
+module Tlb::TestUnit::TestObserver
   class TestUnitRunData
     include Tlb::RunData
 

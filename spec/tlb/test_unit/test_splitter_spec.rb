@@ -2,7 +2,7 @@ require File.join(File.dirname(__FILE__), '..', '..', 'spec_helper')
 require 'test_splitter'
 require 'test/unit/testsuite'
 
-describe Tlb::TestSplitter do
+describe Tlb::TestUnit::TestSplitter do
   def suite name, *tests
     suite = Test::Unit::TestSuite.new(name)
     tests.each do |test|
@@ -25,7 +25,7 @@ describe Tlb::TestSplitter do
         @suite = suite
       end
 
-      include Tlb::TestSplitter
+      include Tlb::TestUnit::TestSplitter
     end.new(@main_suite)
   end
 

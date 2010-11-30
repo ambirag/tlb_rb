@@ -1,13 +1,13 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'spec_helper.rb')
 require 'spec_task_enhancement'
 
-describe Tlb::SpecTaskEnhancement do
+describe Tlb::RSpec::SpecTaskEnhancement do
   before do
     @klass = Class.new do
       def files_to_run
         FileList['foo.rb', 'bar.rb', 'baz.rb', 'quux.rb']
       end
-      include Tlb::SpecTaskEnhancement
+      include Tlb::RSpec::SpecTaskEnhancement
     end
   end
 
@@ -21,7 +21,7 @@ describe Tlb::SpecTaskEnhancement do
   it "should not enhance class if no spec_file_list method is present" do
     begin
       Class.new do
-        include Tlb::SpecTaskEnhancement
+        include Tlb::RSpec::SpecTaskEnhancement
       end
     rescue Exception => e
       e.message.should =~ /undefined method `files_to_run' for class /

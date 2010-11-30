@@ -1,9 +1,9 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'spec_helper')
 require 'mediator_inflection'
 
-describe Tlb::MediatorInflection do
+describe Tlb::TestUnit::MediatorInflection do
   it "should be included in test-runner-mediator" do
-    Test::Unit::UI::TestRunnerMediator.included_modules.should include(Tlb::MediatorInflection)
+    Test::Unit::UI::TestRunnerMediator.included_modules.should include(Tlb::TestUnit::MediatorInflection)
   end
 
   it "should call splitter and observer on run_suite when included" do
@@ -13,7 +13,7 @@ describe Tlb::MediatorInflection do
         @run_suite_called = true
         :run_suite_return
       end
-      include Tlb::MediatorInflection
+      include Tlb::TestUnit::MediatorInflection
     end.new
 
     mediator.expects(:register_observers) do

@@ -1,4 +1,4 @@
-module Tlb::SpecTaskEnhancement
+module Tlb::RSpec::SpecTaskEnhancement
   def self.included base
     base.class_eval do
       alias_method :rspec_files_to_run, :files_to_run

@@ -13,7 +13,8 @@ describe Tlb::TestUnit::TestTask do
       t.verbose = true
     end
 
-    test_task.ruby_opts.should == [" -r#{File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'lib', 'tlb', 'test_unit', 'mediator_inflection.rb'))} "]
+    test_task.ruby_opts.should == [" -r#{File.join('tlb', 'test_unit', 'mediator_inflection.rb')} "]
+    test_task.libs.should include(File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'lib')))
     test_task.libs.should include("foo")
     test_task.instance_variable_get('@test_files').should == ['test/foo_test.rb', 'test/bar_test.rb', 'test/baz_test.rb']
     test_task.verbose.should be_true
@@ -26,7 +27,7 @@ describe Tlb::TestUnit::TestTask do
       t.ruby_opts << " -rbaz/quux "
     end
 
-    test_task.ruby_opts.should == [" -r#{File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'lib', 'tlb', 'test_unit', 'mediator_inflection.rb'))} ",
+    test_task.ruby_opts.should == [" -rtlb/test_unit/mediator_inflection.rb ",
                                    " -Ifoo/bar ",
                                    " -rbaz/quux "]
   end

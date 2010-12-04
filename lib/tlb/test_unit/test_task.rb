@@ -4,6 +4,7 @@ require 'rake/testtask'
 class Tlb::TestUnit::TestTask < Rake::TestTask
   def initialize *args
     super
-    @ruby_opts.unshift " -r#{File.expand_path(File.join(File.dirname(__FILE__), 'mediator_inflection.rb'))} "
+    @libs << File.expand_path(File.join(File.dirname(__FILE__), "..", ".."))
+    @ruby_opts.unshift " -r#{File.join('tlb', 'test_unit', 'mediator_inflection.rb')} "
   end
 end

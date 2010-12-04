@@ -30,4 +30,8 @@ describe Tlb::TestUnit::TestTask do
                                    " -Ifoo/bar ",
                                    " -rbaz/quux "]
   end
+
+  it "should use given name" do
+    Tlb::TestUnit::TestTask.new(:foo_bar).name.should == :foo_bar
+  end
 end

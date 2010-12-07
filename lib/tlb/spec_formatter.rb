@@ -12,10 +12,6 @@ class Tlb::SpecFormatter < Spec::Runner::Formatter::SilentFormatter
       ((end_time - start_time)*MILLS_PER_SEC).to_i
     end
 
-    def for_file? new_file
-      File.identical?(file_name, new_file)
-    end
-
     def report_to_tlb
       rel_file_name = Tlb.relative_file_path(file_name)
       Tlb.suite_time(rel_file_name, run_time)
@@ -56,8 +52,7 @@ class Tlb::SpecFormatter < Spec::Runner::Formatter::SilentFormatter
   private
   def record_suite_data example_proxy
     file_name = example_file_name(example_proxy)
-    suite = @suites.find { |suite_time| suite_time.for_file?(file_name) }
-    if (suite)
+    if (suite = @suites.last) #stupid framework :: retarded fix (this is necessary since rspec creates example_proxies for every example it runs, as though its an independent spec-group)
       suite.end_time = Time.now
       block_given? && yield(suite)
     end

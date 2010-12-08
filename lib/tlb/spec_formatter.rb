@@ -8,6 +8,10 @@ class Tlb::SpecFormatter < Spec::Runner::Formatter::SilentFormatter
       super(file_name, start_time, start_time, false)
     end
 
+    def for_file? new_file
+      File.identical?(file_name, new_file)
+    end
+
     def run_time
       ((end_time - start_time)*MILLS_PER_SEC).to_i
     end
@@ -26,7 +30,9 @@ class Tlb::SpecFormatter < Spec::Runner::Formatter::SilentFormatter
 
   def example_group_started(example_proxy_group)
     file_name = example_file_name(example_proxy_group)
-    @suites << Tlb::SpecFormatter::Suite.new(file_name, Time.now)
+    unless (@suites.last && @suites.last.for_file?(file_name))
+      @suites << Tlb::SpecFormatter::Suite.new(file_name, Time.now)
+    end
   end
 
   def example_passed(example_proxy)

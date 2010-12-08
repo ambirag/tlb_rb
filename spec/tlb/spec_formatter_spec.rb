@@ -112,4 +112,29 @@ describe Tlb::SpecFormatter do
 
     @formatter.start_dump
   end
+
+  it "should share the same suite when example_group starts twice(this happens in nested describe blocks)" do
+    Time.expects(:now).returns(Time.local( 2010, "jul", 16, 12, 5, 10))
+    @formatter.example_group_started(@group_proxy_1)
+    Time.expects(:now).returns(Time.local( 2010, "jul", 16, 12, 5, 20))
+    @formatter.example_passed(Spec::Example::ExampleProxy.new("group1 spec 1", {}, "#{@dir}/baz/group1.rb:12"))
+    Time.expects(:now).returns(Time.local( 2010, "jul", 16, 12, 5, 22))
+    @formatter.example_failed(Spec::Example::ExampleProxy.new("group1 spec 2", {}, "#{@dir}/baz/group1.rb:40"), 1, "ignore")
+    Time.expects(:now).returns(Time.local( 2010, "jul", 16, 12, 5, 29))
+    @formatter.example_pending(Spec::Example::ExampleProxy.new("group1 spec 3", {}, "#{@dir}/baz/group1.rb:55"), "some reason")
+
+    @formatter.example_group_started(@group_proxy_1)
+    Time.expects(:now).returns(Time.local( 2010, "jul", 16, 12, 6, 12))
+    @formatter.example_failed(Spec::Example::ExampleProxy.new("group1 spec 4(nested)", {}, "#{@dir}/baz/group1.rb:100"), 1, "foo_bar")
+    Time.expects(:now).returns(Time.local( 2010, "jul", 16, 12, 6, 25))
+    @formatter.example_pending(Spec::Example::ExampleProxy.new("group1 spec 4(nested)", {}, "#{@dir}/baz/group1.rb:130"), "some pending")
+    Time.expects(:now).returns(Time.local( 2010, "jul", 16, 12, 7, 15))
+    @formatter.example_passed(Spec::Example::ExampleProxy.new("group1 spec 4(nested)", {}, "#{@dir}/baz/group1.rb:145"))
+
+    Tlb.stubs(:suite_result)
+
+    Tlb.expects(:suite_time).with(@file_1, 125000)
+    @formatter.start_dump
+  end
+
 end

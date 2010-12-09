@@ -21,12 +21,13 @@ module Tlb::RunData
   end
 
   def suite_started identity
-    suites << Tlb::RunData::Suite.new(identity, Time.now)
+    unless (suites.last && suites.last.for_id?(identity))
+      suites << Tlb::RunData::Suite.new(identity, Time.now)
+    end
   end
 
   def update_suite_data identity
-    suite = suites.find { |suite_time| suite_time.for_id?(identity) }
-    if (suite)
+    if (suite = suites.last) #stupid framework :: retarded fix (this is necessary since rspec-1[don't know if rspec-2 is as stupid too] creates example_proxies for every example it runs, as though its an independent spec-group)
       suite.end_time = Time.now
       block_given? && yield(suite)
     end

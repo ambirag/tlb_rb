@@ -93,4 +93,29 @@ describe Tlb::RSpec::SpecFormatter do
 
     @formatter.start_dump
   end
+
+  it "should share the same suite when example_group starts twice(this happens in nested describe blocks)" do
+    Time.expects(:now).returns(Time.local( 2010, "jul", 16, 12, 5, 10))
+    @formatter.example_group_started(@group_proxy_1)
+
+    Time.expects(:now).returns(Time.local( 2010, "jul", 16, 12, 5, 20))
+    @formatter.example_passed(RSpec::Core::Example.new(@group_proxy_1, "foo bar", {:caller => "#{@dir}/baz/group1.rb:12"}))
+    Time.expects(:now).returns(Time.local( 2010, "jul", 16, 12, 5, 22))
+    @formatter.example_failed(RSpec::Core::Example.new(@group_proxy_1, "baz quux", {:caller => "#{@dir}/baz/group1.rb:40"}))
+    Time.expects(:now).returns(Time.local( 2010, "jul", 16, 12, 5, 29))
+    @formatter.example_pending(RSpec::Core::Example.new(@group_proxy_1, "quux bang", {:caller => "#{@dir}/baz/group1.rb:55"}))
+
+    @formatter.example_group_started(@group_proxy_1)
+    Time.expects(:now).returns(Time.local( 2010, "jul", 16, 12, 6, 12))
+    @formatter.example_passed(RSpec::Core::Example.new(@group_proxy_1, "foo bar baz", {:caller => "#{@dir}/baz/group1.rb:100"}))
+    Time.expects(:now).returns(Time.local( 2010, "jul", 16, 12, 6, 25))
+    @formatter.example_passed(RSpec::Core::Example.new(@group_proxy_1, "foo bar quux", {:caller => "#{@dir}/baz/group1.rb:130"}))
+    Time.expects(:now).returns(Time.local( 2010, "jul", 16, 12, 7, 15))
+    @formatter.example_passed(RSpec::Core::Example.new(@group_proxy_1, "foo bar bang", {:caller => "#{@dir}/baz/group1.rb:145"}))
+
+    Tlb.stubs(:suite_result)
+
+    Tlb.expects(:suite_time).with(@file_1, 125000)
+    @formatter.start_dump
+  end
 end

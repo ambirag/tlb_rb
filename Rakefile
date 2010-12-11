@@ -1,7 +1,16 @@
 require 'rspec/core/rake_task'
+require 'rake/testtask'
 
-RSpec::Core::RakeTask.new(:spec) do |t|
-  t.pattern = 'spec/**/*_spec.rb'
+task :test => ['test:rspec', 'test:test_unit']
+
+namespace :test do
+  RSpec::Core::RakeTask.new(:rspec) do |t|
+    t.pattern = 'tests/**/*_spec.rb'
+  end
+
+  Rake::TestTask.new(:test_unit) do |t|
+    t.test_files = FileList['tests/**/*_test.rb']
+  end
 end
 
 task :build_tlb do

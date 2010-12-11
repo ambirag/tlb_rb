@@ -2,7 +2,7 @@ require 'rubygems'
 require 'mocha'
 require 'rspec'
 require 'rake'
-require File.join(File.dirname(__FILE__), '..', 'lib', 'tlb')
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib', 'tlb'))
 
 RSpec.configure do |config|
   config.mock_with :mocha

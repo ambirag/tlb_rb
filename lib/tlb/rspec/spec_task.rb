@@ -13,7 +13,11 @@ class Tlb::RSpec::SpecTask < RSpec::Core::RakeTask
   alias_method :rspec_files_to_run, :files_to_run
 
   def files_to_run
-    balanced_and_reordered = Tlb.balance_and_order(rspec_files_to_run.to_a)
+    balanced_and_reordered = Tlb.balance_and_order(relative_paths(rspec_files_to_run.to_a))
     FileList[*balanced_and_reordered]
+  end
+
+  def relative_paths file_name_with_quotes
+    file_name_with_quotes.map { |path_with_quotes| Tlb.relative_file_path(path_with_quotes.sub(/^"/, "").sub(/"$/, "")) }
   end
 end

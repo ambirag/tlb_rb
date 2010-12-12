@@ -69,6 +69,24 @@ describe Tlb::RSpec::SpecFormatter do
     @formatter.start_dump
   end
 
+  it "should use last example group finished time if given" do
+    Time.expects(:now).returns(Time.local( 2010, "jul", 16, 12, 5, 10))
+    @formatter.example_group_started(@group_proxy_1)
+    Time.expects(:now).returns(Time.local( 2010, "jul", 16, 12, 5, 20))
+    @formatter.example_passed(RSpec::Core::Example.new(@group_proxy_1, "foo bar", {:caller => "#{@dir}/baz/group1.rb:12"}))
+    Time.expects(:now).returns(Time.local( 2010, "jul", 16, 12, 5, 22))
+    @formatter.example_failed(RSpec::Core::Example.new(@group_proxy_1, "baz quux", {:caller => "#{@dir}/baz/group1.rb:40"}))
+    Time.expects(:now).returns(Time.local( 2010, "jul", 16, 12, 5, 29))
+    @formatter.example_pending(RSpec::Core::Example.new(@group_proxy_1, "quux bang", {:caller => "#{@dir}/baz/group1.rb:55"}))
+    Time.expects(:now).returns(Time.local( 2010, "jul", 16, 12, 5, 32))
+    @formatter.example_group_finished(@group_proxy_1)
+
+    Tlb.stubs(:suite_result)
+
+    Tlb.expects(:suite_time).with(@file_1, 22000)
+    @formatter.start_dump
+  end
+
   it "should report suite result" do
     @formatter.example_group_started(@group_proxy_1)
     @formatter.example_passed(RSpec::Core::Example.new(@group_proxy_1, "some line 12", {:caller => "#{@dir}/baz/group1.rb:12"}))

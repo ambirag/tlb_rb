@@ -1,6 +1,7 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'lib', 'tlb'))
 require 'rubygems'
 require 'rspec'
+require 'stringio'
 
 require 'tlb/rspec/reporter_inflection'
 require 'test/unit'

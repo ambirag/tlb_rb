@@ -1,5 +1,6 @@
 require 'rspec/core/formatters/base_formatter'
 require 'tlb/run_data'
+require 'stringio'
 
 class Tlb::RSpec::SpecFormatter < RSpec::Core::Formatters::BaseFormatter
   include Tlb::RunData

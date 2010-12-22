@@ -1,7 +1,7 @@
 BASE_DIR = File.dirname(__FILE__)
 LIB_TLB = File.join(BASE_DIR, "lib", "tlb")
 TEST_DIR = File.join(BASE_DIR, "tests")
-TAG_VERSION = `git describe --abbrev=0`.gsub(/^v/, '')
+TAG_VERSION = `git describe --abbrev=0`.gsub(/^v/, '').gsub(/-rspec-1$/, '')
 CODE_VERSION = `git describe --always`
 AUTHORS = ["Janmejay Singh", "Pavan KS"]
 EMAIL = "singh.janmejay@gmail.com;itspanzi@gmail.com"

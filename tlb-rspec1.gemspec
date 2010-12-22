@@ -1,5 +1,5 @@
-$name="tlb-rspec2"
-$framework='rspec-2.x'
+$name="tlb-rspec1"
+$framework='rspec-1.x'
 require File.join(File.dirname(__FILE__), 'gem_common')
 
 Gem::Specification.new do |s|
@@ -14,15 +14,15 @@ Gem::Specification.new do |s|
 
   s.rubygems_version = RUBYGEMS_VERSION
 
-  s.files            = files('tests', File.join('lib', 'tlb', 'test_unit'))
+  s.files            = files('spec')
   s.extra_rdoc_files = [ "README.markdown" ]
   s.rdoc_options     = ["--charset=UTF-8"]
   s.require_path     = "lib"
 
   s.add_runtime_dependency 'open4', '>= 1.0.1'
   s.add_runtime_dependency 'rake'
-  s.add_runtime_dependency 'rspec', '>= 2.3.0'
 
+  s.add_development_dependency 'rspec', '>= 1.3.0'
   s.add_development_dependency 'mocha'
   s.add_development_dependency 'gemcutter'
 end

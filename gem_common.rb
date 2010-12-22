@@ -53,4 +53,5 @@ def configure_tlb s
 
   s.add_runtime_dependency 'open4', '>= 1.0.1'
   s.add_runtime_dependency 'rake'
+  s.add_runtime_dependency 'rspec', '>= 1.3.0', '< 2.0.0'
 end

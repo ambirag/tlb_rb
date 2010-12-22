@@ -6,6 +6,4 @@ Gem::Specification.new do |s|
   configure_tlb(s)
 
   s.files            = files('tests', File.join('lib', 'tlb', 'test_unit'))
-
-  s.add_development_dependency 'rspec', '>= 1.3.0'
 end

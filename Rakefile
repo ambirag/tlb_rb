@@ -18,3 +18,8 @@ task :build_tlb do
   sh 'ant -f tlb/build.xml package'
   Dir.glob('tlb/target/tlb-all*').each { |file| FileUtils.copy(file, ".") }
 end
+
+task :package do
+  `gem build tlb-rspec2.gemspec`
+  `gem build tlb-testunit.gemspec`
+end

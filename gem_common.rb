@@ -28,6 +28,7 @@ RUBYGEMS_VERSION = "1.3.7"
 def files *exclude_dirs
   files = `git ls-files`.split("\n")
   files += Dir.glob(File.join(File.dirname(__FILE__), "*.jar")).map { |path| File.basename(path) }
+  files += Dir.glob(File.join(File.dirname(__FILE__), "doc", "**", "*"))
   exclude_dirs.inject(files) { |files, dir| files - `git ls-files #{dir}`.split("\n") }
 end
 

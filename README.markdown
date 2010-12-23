@@ -14,17 +14,19 @@ As of now, rspec is the only test framework that tlb_rb supports. We plan to add
 Please refer the [sample_projects](http://github.com/test-load-balancer/sample_projects "Tlb setup examples") to see the details of how to set it up.
 
 Usually, something equivallent of this in one of your Rake files should suffice:
+    
+    require 'rubygems'
+    gem 'tlb-rspec1'
+    require 'tlb'
+    require File.join('tlb/spec_task')
 
-    PATH_TO_TLB = File.join(RAILS_ROOT, 'vendor', 'plugins', 'tlb_rb', 'lib', 'tlb')
-    require PATH_TO_TLB
-    require File.join(PATH_TO_TLB, 'spec_task')
-  
     Tlb::SpecTask.new(:balanced_specs) do |t|
       t.spec_files = FileList['spec/**/*_spec.rb']
-      t.spec_opts << "--require #{PATH_TO_TLB},#{File.join(PATH_TO_TLB, 'spec_formatter')} --format 'Tlb::SpecFormatter:/dev/null' --format nested"
+      t.spec_opts << "--format progress"
     end
-  
+
+    load 'tasks/tlb.rake'
     desc "load balanced spec"
-    task :run_balanced => ['tlb:start', :balanced_specs]
+    task :bal => ['tlb:start', :balanced_specs]
   
 Where run_balanced is the task you invoke at the top-level(invoked externally).

@@ -106,7 +106,7 @@ module Tlb
   end
 
   def self.start_server
-    ENV[TLB_APP] = 'com.github.tlb.balancer.BalancerInitializer'
+    ENV[TLB_APP] = 'tlb.balancer.BalancerInitializer'
     @pid, input, out, err = Open4.popen4(server_command)
     @out_pumper = stream_pumper_for(out, TLB_OUT_FILE)
     @err_pumper = stream_pumper_for(err, TLB_ERR_FILE)

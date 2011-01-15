@@ -1,6 +1,5 @@
-require File.join(File.dirname(__FILE__), 'spec_helper')
+require File.join(File.expand_path(File.dirname(__FILE__)), 'spec_helper')
 require 'open4'
-require 'parsedate'
 require 'tmpdir'
 require 'webrick'
 

@@ -1,6 +1,5 @@
-require File.join(File.dirname(__FILE__), 'spec_helper')
+require File.join(File.expand_path(File.dirname(__FILE__)), 'spec_helper')
 require 'open4'
-require 'parsedate'
 require 'tmpdir'
 
 describe Tlb do
@@ -22,13 +21,6 @@ describe Tlb do
     Process.expects(:wait).with()
 
     Tlb.stop_server
-  end
-
-  def times_of_output content, stream_name
-    content.split("\n").map { |line| line.gsub(stream_name, '') }.map do |line|
-      year, month, day_of_month, hour, minute, second, timezone, day_of_week = ParseDate.parsedate(line)
-      Time.local(year, month, day_of_month, hour, minute, second)
-    end
   end
 
   it "should generate the right command to run tlb balancer server" do

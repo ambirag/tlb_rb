@@ -9,7 +9,7 @@ describe Tlb do
   JOB_NAME = "foo"
   TLB_BALANCER_PORT = '9173'
   before :all do
-    ENV['TLB_APP'] = 'com.github.tlb.server.TlbServerInitializer'
+    ENV['TLB_APP'] = 'tlb.server.TlbServerInitializer'
     @pid, i, o, e = Open4.popen4(Tlb.server_command)
   end
 
@@ -31,11 +31,11 @@ describe Tlb do
 
       ENV['TLB_BALANCER_PORT'] = TLB_BALANCER_PORT
       ENV['TLB_URL'] = URL
-      ENV['TALK_TO_SERVICE'] = "com.github.tlb.service.TalkToTlbServer"
+      ENV['TALK_TO_SERVICE'] = "tlb.service.TalkToTlbServer"
       ENV['TLB_JOB_NAME'] = JOB_NAME
       ENV['TOTAL_PARTITIONS'] = '2'
       ENV['JOB_VERSION'] = '123'
-      ENV['TLB_CRITERIA'] = 'com.github.tlb.splitter.CountBasedTestSplitterCriteria'
+      ENV['TLB_CRITERIA'] = 'tlb.splitter.CountBasedTestSplitterCriteria'
     end
 
     after do

@@ -67,7 +67,7 @@ describe Tlb do
         end
 
         def self.popen4 command
-          ENV['TLB_APP'].should == "com.github.tlb.balancer.BalancerInitializer"
+          ENV['TLB_APP'].should == "tlb.balancer.BalancerInitializer"
         end
       end
     end

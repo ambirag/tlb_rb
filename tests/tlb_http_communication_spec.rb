@@ -30,12 +30,12 @@ describe Tlb do
       Tlb.server_running?.should be_false #precondition (the server must be started if not running)
 
       ENV['TLB_BALANCER_PORT'] = TLB_BALANCER_PORT
-      ENV['TLB_URL'] = URL
-      ENV['TALK_TO_SERVICE'] = "tlb.service.TalkToTlbServer"
+      ENV['TLB_BASE_URL'] = URL
+      ENV['TYPE_OF_SERVER'] = "tlb.service.TlbServer"
       ENV['TLB_JOB_NAME'] = JOB_NAME
-      ENV['TOTAL_PARTITIONS'] = '2'
-      ENV['JOB_VERSION'] = '123'
-      ENV['TLB_CRITERIA'] = 'tlb.splitter.CountBasedTestSplitterCriteria'
+      ENV['TLB_TOTAL_PARTITIONS'] = '2'
+      ENV['TLB_JOB_VERSION'] = '123'
+      ENV['TLB_SPLITTER'] = 'tlb.splitter.CountBasedTestSplitter'
     end
 
     after do
@@ -44,13 +44,13 @@ describe Tlb do
     end
 
     it "should balance for first partition" do
-      ENV['PARTITION_NUMBER'] = '1'
+      ENV['TLB_PARTITION_NUMBER'] = '1'
       Tlb.start_server
       Tlb.balance_and_order(["./foo/bar.rb", "./foo/baz.rb", "./bar/foo.rb", "./bar/quux.rb"]).should == ["./foo/bar.rb", "./foo/baz.rb"]
     end
 
     it "should balance for second partition" do
-      ENV['PARTITION_NUMBER'] = '2'
+      ENV['TLB_PARTITION_NUMBER'] = '2'
       Tlb.start_server
       Tlb.balance_and_order(["./foo/bar.rb", "./foo/baz.rb", "./bar/foo.rb", "./bar/quux.rb"]).should == ["./bar/foo.rb", "./bar/quux.rb"]
     end

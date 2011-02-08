@@ -6,7 +6,7 @@ end
 
 task :build_tlb do
   Dir.glob("tlb-all*.jar").each { |jar| FileUtils.rm(jar) }
-  sh 'ant -f tlb/build.xml package'
+  sh 'ant -f tlb/build.xml package -Doffline=t'
   Dir.glob('tlb/target/tlb-all*').each { |file| FileUtils.copy(file, ".") }
 end
 

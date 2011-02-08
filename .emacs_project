@@ -1,0 +1,7 @@
+(setq rspec-executable "spec")
+(setenv "GEM_HOME" "/home/janmejay/.rvm/gems/ruby-1.9.2-head@rspec-1")
+(setenv "GEM_PATH" "/home/janmejay/.rvm/gems/ruby-1.9.2-head@rspec-1:/home/janmejay/.rvm/gems/ruby-1.9.2-head@global")
+(let ((bindir "/home/janmejay/.rvm/gems/ruby-1.9.2-head@rspec-1/bin")
+      (path (getenv "PATH")))
+  (unless (string-match-p  bindir path)
+    (setenv "PATH" (concat bindir ":" path))))

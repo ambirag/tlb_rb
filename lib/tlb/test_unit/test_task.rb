@@ -1,5 +1,6 @@
 require 'rake'
 require 'rake/testtask'
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'tlb'))
 
 class Tlb::TestUnit::TestTask < Rake::TestTask
   def initialize *args

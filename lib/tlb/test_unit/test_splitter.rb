@@ -1,3 +1,5 @@
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'tlb'))
+
 module Tlb::TestUnit::TestSplitter
   def prune_suite
     name_suite_map = @suite.tests.inject({}) { |map, test| map[test.name] = test; map }

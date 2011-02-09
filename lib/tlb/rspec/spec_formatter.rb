@@ -1,4 +1,5 @@
 require 'rspec/core/formatters/base_formatter'
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'tlb'))
 require 'tlb/run_data'
 require 'stringio'
 

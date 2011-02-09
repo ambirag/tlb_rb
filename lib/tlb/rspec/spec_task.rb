@@ -1,4 +1,5 @@
 require 'rspec/core/rake_task'
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'tlb'))
 
 class Tlb::RSpec::SpecTask < RSpec::Core::RakeTask
   def initialize *args

@@ -1,3 +1,4 @@
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'tlb'))
 require 'tlb/run_data'
 
 module Tlb::TestUnit::TestObserver
@@ -12,10 +13,10 @@ module Tlb::TestUnit::TestObserver
       test_name.scan(/\((.+)\)$/).flatten.first
     end
   end
-  
+
   def register_observers
     run_data = TestUnitRunData.new
-    
+
     add_listener(Test::Unit::TestResult::FAULT) do |fault|
       run_data.suite_failed(fault)
     end

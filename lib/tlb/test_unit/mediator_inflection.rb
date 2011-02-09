@@ -1,4 +1,5 @@
 require 'tlb/test_unit/test_splitter'
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'tlb'))
 require 'tlb/test_unit/test_observer'
 require 'test/unit/ui/testrunnermediator'
 

@@ -1,4 +1,5 @@
 require 'rspec/core/reporter'
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'tlb'))
 require 'tlb/rspec/spec_formatter'
 
 module Tlb::RSpec::ReporterInflection

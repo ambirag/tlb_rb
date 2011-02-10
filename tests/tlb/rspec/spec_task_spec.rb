@@ -3,8 +3,7 @@ require 'tlb/rspec/spec_task'
 
 describe Tlb::RSpec::SpecTask do
   before(:all) do
-    @path_to_tlb = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'lib', 'tlb'))
-    @path_to_reporter_inflection = File.expand_path(File.join(@path_to_tlb, 'rspec', 'reporter_inflection'))
+    @path_to_reporter_inflection = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'lib', 'tlb', 'rspec', 'reporter_inflection'))
   end
 
   def spec_files_pattern
@@ -33,7 +32,7 @@ describe Tlb::RSpec::SpecTask do
 
   it "should hookup formatter so feedback is posted" do
     @task = Tlb::RSpec::SpecTask.new
-    @task.rspec_opts.should == " --require #{@path_to_tlb} --require tlb/rspec/reporter_inflection "
+    @task.rspec_opts.should == " --require '#{@path_to_reporter_inflection}' "
   end
 
   it "should honor user specified attributes" do
@@ -41,7 +40,7 @@ describe Tlb::RSpec::SpecTask do
       t.rspec_opts = "--require foo_bar"
       t.rspec_opts += " --require baz_quux"
     end
-    @task.rspec_opts.should == " --require #{@path_to_tlb} --require tlb/rspec/reporter_inflection --require foo_bar --require baz_quux"
+    @task.rspec_opts.should == " --require '#{@path_to_reporter_inflection}' --require foo_bar --require baz_quux"
     @task.name.should == :foo
   end
 

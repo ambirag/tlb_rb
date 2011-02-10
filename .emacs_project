@@ -4,4 +4,4 @@
 (let ((gem-bin "/home/janmejay/.rvm/gems/ruby-1.8.7-head@vanilla/bin")
       (path (getenv "PATH")))
   (unless (string-match-p  gem-bin path)
-    (setenv "PATH" (concat gen-bin ":" path))))
+    (setenv "PATH" (concat gem-bin ":" path))))

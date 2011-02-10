@@ -1,12 +1,13 @@
 require 'rspec/core/rake_task'
 require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'tlb'))
+require 'tlb/util'
 
 class Tlb::RSpec::SpecTask < RSpec::Core::RakeTask
   def initialize *args
     super do |this|
       yield this if block_given?
       this.rspec_opts ||= ''
-      this.rspec_opts = " --require tlb/rspec/reporter_inflection " + this.rspec_opts
+      this.rspec_opts = " --require #{Tlb::Util.quote_path(File.dirname(__FILE__), 'reporter_inflection')} " + this.rspec_opts
     end
   end
 

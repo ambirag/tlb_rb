@@ -1,4 +1,5 @@
 require 'spec/runner/formatter/silent_formatter'
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'tlb'))
 
 class Tlb::SpecFormatter < Spec::Runner::Formatter::SilentFormatter
   class Suite < Struct.new(:file_name, :start_time, :end_time, :failed)

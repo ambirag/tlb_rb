@@ -1,5 +1,5 @@
 require File.join(File.expand_path(File.dirname(__FILE__)), '..', 'spec_helper.rb')
-require 'spec_task'
+require 'tlb/spec_task'
 
 describe Tlb::SpecTask do
   before(:all) do
@@ -19,7 +19,7 @@ describe Tlb::SpecTask do
 
   it "should hookup formatter so feedback is posted" do
     @task = Tlb::SpecTask.new
-    @task.spec_opts.should == ["--require #{@path_to_tlb},#{@path_to_spec_formatter} --format 'Tlb::SpecFormatter:/dev/null'"]
+    @task.spec_opts.should == ["--require '#{@path_to_spec_formatter}' --format 'Tlb::SpecFormatter:/dev/null'"]
   end
 
   it "should honor user specified attributes" do
@@ -27,7 +27,7 @@ describe Tlb::SpecTask do
       t.spec_opts << "--require foo_bar"
       t.spec_opts << "--require baz_quux"
     end
-    @task.spec_opts.should == ["--require #{@path_to_tlb},#{@path_to_spec_formatter} --format 'Tlb::SpecFormatter:/dev/null'", "--require foo_bar", "--require baz_quux"]
+    @task.spec_opts.should == ["--require '#{@path_to_spec_formatter}' --format 'Tlb::SpecFormatter:/dev/null'", "--require foo_bar", "--require baz_quux"]
     @task.name.should == :foo
   end
 
@@ -35,6 +35,6 @@ describe Tlb::SpecTask do
     @task = Tlb::SpecTask.new(:foo) do |t|
       t.tlb_out = "/tmp/tlb_spec_formatter_out"
     end
-    @task.spec_opts.should == ["--require #{@path_to_tlb},#{@path_to_spec_formatter} --format 'Tlb::SpecFormatter:/tmp/tlb_spec_formatter_out'"]
+    @task.spec_opts.should == ["--require '#{@path_to_spec_formatter}' --format 'Tlb::SpecFormatter:/tmp/tlb_spec_formatter_out'"]
   end
 end

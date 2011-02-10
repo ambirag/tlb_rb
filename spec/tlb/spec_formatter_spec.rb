@@ -1,5 +1,5 @@
 require File.join(File.expand_path(File.dirname(__FILE__)), '..', 'spec_helper.rb')
-require 'spec_formatter'
+require 'tlb/spec_formatter'
 require 'spec/example/example_proxy'
 require 'spec/example/example_group_proxy'
 

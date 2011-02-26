@@ -5,5 +5,5 @@ require File.join(File.dirname(__FILE__), 'gem_common')
 Gem::Specification.new do |s|
   configure_tlb(s)
 
-  s.files            = files('tests', File.join('lib', 'tlb', 'test_unit'))
+  s.files            = files('spec', File.join('lib', 'tlb', 'test_unit'))
 end

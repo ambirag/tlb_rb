@@ -14,9 +14,10 @@ namespace :test do
 end
 
 task :build_tlb do
-  Dir.glob("tlb-all*.jar").each { |jar| FileUtils.rm(jar) }
-  sh 'ant -f tlb/build.xml package'
-  Dir.glob('tlb/target/tlb-all*').each { |file| FileUtils.copy(file, ".") }
+  [Dir.glob("tlb-alien*.jar"), Dir.glob("tlb-server*.jar")].flatten.each { |jar| FileUtils.rm(jar) }
+  sh '(cd tlb && ant clean package -Doffline=t)'
+  Dir.glob('tlb/target/tlb-alien*').each { |file| FileUtils.copy(file, ".") }
+  Dir.glob('tlb/target/tlb-server*').each { |file| FileUtils.copy(file, "tests/") }
 end
 
 task :package do

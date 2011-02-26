@@ -99,7 +99,7 @@ module Tlb
   end
 
   def self.tlb_jar
-    File.expand_path(Dir.glob(File.join(root_dir, "tlb-all*")).first)
+    File.expand_path(Dir.glob(File.join(root_dir, "tlb-alien*")).first)
   end
 
   def self.server_command

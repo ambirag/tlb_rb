@@ -10,7 +10,8 @@ describe Tlb do
   TLB_BALANCER_PORT = '9173'
   before :all do
     ENV['TLB_APP'] = 'tlb.server.TlbServerInitializer'
-    @pid, i, o, e = Open4.popen4(Tlb.server_command)
+    server_jar = File.expand_path(Dir.glob(File.join(File.dirname(__FILE__), "tlb-server*")).first)
+    @pid, i, o, e = Open4.popen4("java -jar #{server_jar}")
   end
 
   after :all do

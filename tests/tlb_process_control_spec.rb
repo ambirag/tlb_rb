@@ -32,7 +32,7 @@ describe Tlb do
   end
 
   it "should generate the right command to run tlb balancer server" do
-    tlb_jar = File.expand_path(Dir.glob(File.join(File.join(File.dirname(__FILE__), ".."), "tlb-all*")).first)
+    tlb_jar = File.expand_path(Dir.glob(File.join(File.join(File.dirname(__FILE__), ".."), "tlb-alien*")).first)
     Tlb.server_command.should == "java -jar #{tlb_jar}"
   end
 

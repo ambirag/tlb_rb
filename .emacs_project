@@ -1,7 +1,19 @@
 (setq rspec-executable "spec")
-(setenv "GEM_HOME" "/home/janmejay/.rvm/gems/ruby-1.9.2-head@rspec-1")
-(setenv "GEM_PATH" "/home/janmejay/.rvm/gems/ruby-1.9.2-head@rspec-1:/home/janmejay/.rvm/gems/ruby-1.9.2-head@global")
-(let ((bindir "/home/janmejay/.rvm/gems/ruby-1.9.2-head@rspec-1/bin")
-      (path (getenv "PATH")))
-  (unless (string-match-p  bindir path)
-    (setenv "PATH" (concat bindir ":" path))))
+(setq rb_platform "jruby")
+;;(setq rb_platform "mri")
+
+(unless (getenv "ORIG_PATH")
+  (setenv "ORIG_PATH" (getenv "PATH")))
+
+(defun add-gem-bin (gem-bin)
+  (setenv "PATH" (concat gem-bin ":" (getenv "ORIG_PATH"))))
+
+(if (equal rb_platform "jruby")
+    (progn 
+      (setenv "GEM_HOME" "/home/janmejay/.rvm/gems/jruby-1.5.6@tlb")
+      (setenv "GEM_PATH" "/home/janmejay/.rvm/gems/jruby-1.5.6@tlb:/home/janmejay/.rvm/gems/jruby-1.5.6@global")
+      (add-gem-bin "/home/janmejay/.rvm/gems/jruby-1.5.6@tlb/bin"))
+    (progn
+      (setenv "GEM_HOME" "/home/janmejay/.rvm/gems/ruby-1.9.2-head@rspec-1")
+      (setenv "GEM_PATH" "/home/janmejay/.rvm/gems/ruby-1.9.2-head@rspec-1:/home/janmejay/.rvm/gems/ruby-1.8.7-head@global")
+      (add-gem-bin "/home/janmejay/.rvm/gems/ruby-1.9.2-head@rspec-1/bin")))

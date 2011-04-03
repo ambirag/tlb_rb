@@ -13,12 +13,8 @@ describe Tlb do
   SIG_TERM = 15
 
   it "should terminate process when stop called" do
-    Tlb.instance_variable_set('@pid', MOCK_PROCESS_ID)
-    Tlb.instance_variable_set('@out_pumper', Thread.new { })
-    Tlb.instance_variable_set('@err_pumper', Thread.new { })
-
-    Process.expects(:kill).with(SIG_TERM, MOCK_PROCESS_ID)
-    Process.expects(:wait).with()
+    Tlb.instance_variable_set('@balancer_process', bal_process = mock('balancer_process'))
+    bal_process.expects(:die)
 
     Tlb.stop_server
   end
@@ -26,18 +22,6 @@ describe Tlb do
   it "should generate the right command to run tlb balancer server" do
     tlb_jar = File.expand_path(Dir.glob(File.join(File.join(File.dirname(__FILE__), ".."), "tlb-alien*")).first)
     Tlb.server_command.should == "java -jar #{tlb_jar}"
-  end
-
-  describe :integration_test do
-    it "should pump both error and out to the file" do
-      Tlb.stubs(:wait_for_start)
-      Tlb.expects(:server_command).returns(File.join(File.dirname(__FILE__), "fixtures", "foo.sh"))
-      Tlb.start_server
-      sleep 2
-      Tlb.stop_server
-      File.read(@out_file).should include("hello out\n")
-      File.read(@err_file).should include("hello err\n")
-    end
   end
 
   it "should fail of server not running" do
@@ -49,33 +33,5 @@ describe Tlb do
     Tlb.expects(:server_running?).returns(true)
     Tlb.expects(:start_server).never
     Tlb.ensure_server_running
-  end
-
-  describe "env var" do
-    before do
-      module Open4
-        class << self
-          alias_method :old_popen4, :popen4
-        end
-
-        def self.popen4 command
-          ENV['TLB_APP'].should == "tlb.balancer.BalancerInitializer"
-        end
-      end
-    end
-
-    after do
-      module Open4
-        class << self
-          alias_method :popen4, :old_popen4
-        end
-      end
-    end
-
-    it "should set TLB_APP to point to balancer before starting the server" do
-      ENV['TLB_APP'] = "foo"
-      Tlb.stubs(:server_command).returns("foo bar")
-      Tlb.start_server
-    end
   end
 end

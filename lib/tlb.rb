@@ -111,38 +111,46 @@ module Tlb
   end
 
   class BalancerProcess
+    class StreamPumper
+      def initialize stream, file
+        @stream, @file = stream, file
+        @thd = Thread.new { pump }
+      end
+
+      def pump
+        loop do
+          data_available? && flush_stream
+          Thread.current[:stop_pumping] && break
+          sleep 0.1
+        end
+      end
+
+      def flush_stream
+        File.open(ENV[@file], 'a') do |h|
+          h.write(read)
+        end
+      end
+
+      def stop_pumping!
+        @thd[:stop_pumping] = true
+        @thd.join
+      end
+    end
+
     def initialize server_command
-      out, err  = start(server_command)
-      @out_pumper = stream_pumper_for(out, TLB_OUT_FILE)
-      @err_pumper = stream_pumper_for(err, TLB_ERR_FILE)
+      pumper_type, out, err  = start(server_command)
+      @out_pumper = pumper_type.new(out, TLB_OUT_FILE)
+      @err_pumper = pumper_type.new(err, TLB_ERR_FILE)
     end
 
     def stop_pumping
-      @out_pumper[:stop_pumping] = true
-      @err_pumper[:stop_pumping] = true
-      @out_pumper.join
-      @err_pumper.join
+      @out_pumper.stop_pumping!
+      @err_pumper.stop_pumping!
     end
 
     def die
       Balancer.terminate
       stop_pumping
-    end
-
-    def stream_pumper_for stream, dump_file
-      Thread.new do
-        loop do
-          data_available_on?(stream) && BalancerProcess.write_to_file(dump_file, read_from(stream))
-          Thread.current[:stop_pumping] && break
-          sleep 0.1
-        end
-      end
-    end
-
-    def self.write_to_file file_var, clob
-      File.open(ENV[file_var], 'a') do |h|
-        h.write(clob)
-      end
     end
   end
 
@@ -152,21 +160,21 @@ module Tlb
       unless (out)
         raise "out was nil"
       end
-      return out, err
+      return Class.new(StreamPumper) do
+        def data_available?
+          not @stream.eof?
+        end
+
+        def read
+          @stream.read
+        end
+      end, out, err
     end
 
     def die
       super
       @pid = nil
       Process.wait
-    end
-
-    def data_available_on? stream
-      not stream.eof?
-    end
-
-    def read_from stream
-      stream.read
     end
   end
 
@@ -178,19 +186,30 @@ module Tlb
         pb.environment[key] = val
       end
       @process = pb.start()
-      return buf_reader(@process.input_stream), buf_reader(@process.error_stream)
+      return Class.new(StreamPumper) do
+        def data_available?
+          @stream.ready
+        end
+
+        def read
+          @stream.read_line
+        end
+
+        def stop_pumping!
+          super
+          @stream.close
+        end
+      end, buf_reader(@process.input_stream), buf_reader(@process.error_stream)
     end
 
     def buf_reader stream
       java.io.BufferedReader.new(java.io.InputStreamReader.new(stream))
     end
 
-    def data_available_on? reader
-      reader.ready
-    end
-
-    def read_from reader
-      reader.read_line
+    def die
+      super
+      @process.waitFor
+      @process = nil
     end
   end
 

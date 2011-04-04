@@ -1,6 +1,6 @@
 (setq rspec-executable "spec")
 (setq rb_platform "jruby")
-;;(setq rb_platform "mri")
+(setq rb_platform "mri")
 
 (unless (getenv "ORIG_PATH")
   (setenv "ORIG_PATH" (getenv "PATH")))

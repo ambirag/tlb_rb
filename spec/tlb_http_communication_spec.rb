@@ -107,37 +107,20 @@ describe Tlb do
   end
 
   describe :wait_for_server_to_start do
-    class CtrlStatus < WEBrick::HTTPServlet::AbstractServlet
-      def do_GET(request, response)
-        response.status = 200
-        response['Content-Type'] = 'text/plain'
-        response.body = 'RUNNING'
-      end
-    end
     before do
-      @server = nil
       ENV['TLB_BALANCER_PORT'] = TLB_BALANCER_PORT
+      ENV['SLEEP_BEFORE_STATUS'] = '3'
+      klass = Tlb.balancer_process_type
+      @mock_balancer = klass.new("#{File.join(File.dirname(__FILE__), "fixtures", "mock_balancer.rb")}")
     end
 
     after do
-      @server.shutdown
+      @mock_balancer.die
     end
 
     it "should wait until socket has a listener" do
-      @wait_completed = false
       before_start = Time.now
-      wait_thread = Thread.new do
-        sleep 3
-        @wait_completed = true
-        @server = WEBrick::HTTPServer.new(:Port => TLB_BALANCER_PORT.to_i,
-                                          :Logger => WEBrick::BasicLog.new(tmp_file('tlb_webrick_log').path),
-                                          :AccessLog => WEBrick::BasicLog.new(tmp_file('tlb_webrick_access_log').path))
-        @server.mount '/control/status', CtrlStatus
-        @server.start
-      end
-      @wait_completed.should be_false
       Tlb::Balancer.wait_for_start
-      @wait_completed.should be_true
       Time.now.should > (before_start + 3)
     end
   end

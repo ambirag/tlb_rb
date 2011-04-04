@@ -134,16 +134,10 @@ module Tlb
 
     def stream_pumper_for stream, dump_file
       Thread.new do
-        begin
-          loop do
-            data_available_on?(stream) || BalancerProcess.write_to_file(dump_file, read_from(stream))
-            Thread.current[:stop_pumping] && break
-            sleep 0.1
-          end
-        rescue
-          puts $!.inspect
-          puts $!.message
-          puts $!.backtrace
+        loop do
+          data_available_on?(stream) && BalancerProcess.write_to_file(dump_file, read_from(stream))
+          Thread.current[:stop_pumping] && break
+          sleep 0.1
         end
       end
     end
@@ -171,7 +165,7 @@ module Tlb
     end
 
     def data_available_on? stream
-      stream.eof?
+      not stream.eof?
     end
 
     def read_from stream

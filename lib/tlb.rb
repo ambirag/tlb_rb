@@ -211,6 +211,7 @@ module Tlb
 
     def die
       super
+      @process.destroy
       @process.waitFor
       @process = nil
     end

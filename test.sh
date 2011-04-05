@@ -34,9 +34,9 @@ function show_running_with {
 run_tests_with() {
     rvm use $1
     show_running_with  
-    rake test
+    rake spec
 }
 
-run_tests_with ruby-1.8.7-head@tlb
+run_tests_with ruby-1.9.2-head@rspec-1
 
-run_tests_with jruby-1.5.6@tlb
+run_tests_with jruby-1.5.6@rspec-1

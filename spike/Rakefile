@@ -1,0 +1,9 @@
+$:.unshift(File.dirname(__FILE__))
+require 'cucumber/rake/task'
+require 'cucumber/cli/configuration'
+require '../lib/tlb/cucumber/cli/configuration_inflection'
+
+Cucumber::Rake::Task.new('foo') do |t|
+  t.fork = false
+  t.cucumber_opts = %w{--format pretty}
+end

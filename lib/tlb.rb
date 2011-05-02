@@ -67,6 +67,10 @@ module Tlb
     rel_file_name = abs_file_name.sub(/^#{Dir.pwd}/, '.')
   end
 
+  def self.relative_file_paths file_names
+    file_names.map { |file_name| relative_file_path(file_name) }
+  end
+
   def self.balance_and_order file_set
     ensure_server_running
     Balancer.send(Balancer::BALANCE_PATH, file_set.join("\n")).split("\n")

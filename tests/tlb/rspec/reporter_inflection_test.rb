@@ -65,5 +65,3 @@ class Tlb::RSpec::ReporterInflectionTest < Test::Unit::TestCase
     assert_equal Tlb::RSpec::SpecFormatter, @reporter.formatters_while_reporting[3].class
   end
 end
-
-

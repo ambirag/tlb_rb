@@ -4,19 +4,21 @@ require 'tlb/cucumber/test_splitter'
 
 module Tlb
   module Cucumber
-      module ConfigurationInflection
-        def self.included base
-          base.send(:alias_method, :all_feature_files, :feature_files)
-          base.send(:remove_method, :feature_files)
-          base.send(:include, InstanceMethods)
-        end
+    module ConfigurationInflection
+      include Tlb::Cucumber::TestSplitter
 
-        module InstanceMethods
-          def feature_files
-            prune_features(all_feature_files)
-          end
+      def self.included base
+        base.send(:alias_method, :all_feature_files, :feature_files)
+        base.send(:remove_method, :feature_files)
+        base.send(:include, InstanceMethods)
+      end
+
+      module InstanceMethods
+        def feature_files
+          prune_features(all_feature_files)
         end
       end
+    end
   end
 end
 

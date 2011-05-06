@@ -1,31 +1,23 @@
-#require 'tlb/run_data'
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'tlb'))
+require 'tlb/run_data'
 
-class FormatterCallback
-#  include Tlb::RunData
+module Tlb
+  module Cucumber
+    class FormatterCallback
+      include Tlb::RunData
 
-  def initialize(first, second, third)
-    puts first
-    puts second
-    puts third
-  end 
+      def initialize(*args)
+      end
 
-  attr_accessor :time
+      def before_feature(*args)
+        puts args[0].file
+      end
 
-  def before_steps(args)
-    puts args
- #   suite_started("foo")
-  end
+      def after_feature(*args)
+      end
 
-  def after_steps(args)
-    puts args
-  #  suite_ended("foo")
-  end
-  
-  def before_feature(args)
-    puts args.file
-  end
-
-  def before_step_result(one, two, three, four, five, six, seven)
-    puts four
+      def after_step_result(*args)
+      end
+    end
   end
 end

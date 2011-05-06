@@ -1,9 +1,11 @@
-$:.unshift(File.dirname(__FILE__))
-require 'cucumber/rake/task'
-require 'cucumber/cli/configuration'
-require '../lib/tlb/cucumber/cli/configuration_inflection'
+require 'rubygems'
+require 'cucumber'
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib', 'tlb'))
+require 'tlb/cucumber/cucumber_task'
 
-Cucumber::Rake::Task.new('foo') do |t|
-  t.fork = false
-  t.cucumber_opts = %w{--format pretty}
-end
+Tlb::Cucumber::CucumberTask.new('foo')
+
+load 'tasks/tlb.rake'
+desc "run specs load-balanced(based on environment variables)"
+task :bal => ['tlb:start', :foo]
+

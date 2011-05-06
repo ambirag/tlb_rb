@@ -103,7 +103,9 @@ module Tlb
   end
 
   def self.tlb_jar
-    File.expand_path(Dir.glob(File.join(root_dir, "tlb-alien*")).first)
+    foo = File.expand_path(Dir.glob(File.join(root_dir, "tlb-alien*")).first)
+    puts foo
+    foo
   end
 
   def self.server_command

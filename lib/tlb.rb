@@ -44,10 +44,13 @@ module Tlb
       false
     end
 
+    def self.terminate
+      get("/control/suicide")
+    end
+
     def self.wait_for_start
       loop do
         begin
-          TCPSocket.new(host, port)
           break if running?
         rescue
           #ignore
@@ -112,37 +115,126 @@ module Tlb
     "java -jar #{tlb_jar}"
   end
 
-  def self.write_to_file file_var, clob
-    File.open(ENV[file_var], 'a') do |h|
-      h.write(clob)
+  def self.can_fork?
+    RUBY_PLATFORM != 'java'
+  end
+
+  class BalancerProcess
+    class StreamPumper
+      def initialize stream, file
+        @stream, @file = stream, file
+        @thd = Thread.new { pump }
+      end
+
+      def pump
+        loop do
+          data_available? && flush_stream
+          Thread.current[:stop_pumping] && break
+          sleep 0.1
+        end
+      end
+
+      def flush_stream
+        File.open(ENV[@file], 'a') do |h|
+          h.write(read)
+        end
+      end
+
+      def stop_pumping!
+        @thd[:stop_pumping] = true
+        @thd.join
+      end
     end
+
+    def initialize server_command
+      pumper_type, out, err  = start(server_command)
+      @out_pumper = pumper_type.new(out, TLB_OUT_FILE)
+      @err_pumper = pumper_type.new(err, TLB_ERR_FILE)
+    end
+
+    def stop_pumping
+      @out_pumper.stop_pumping!
+      @err_pumper.stop_pumping!
+    end
+
+    def die
+      Balancer.terminate
+      stop_pumping
+    end
+  end
+
+  class ForkBalancerProcess < BalancerProcess
+    def start server_command
+      @pid, input, out, err = Open4.popen4(server_command)
+      unless (out)
+        raise "out was nil"
+      end
+      return Class.new(StreamPumper) do
+        def data_available?
+          not @stream.eof?
+        end
+
+        def read
+          @stream.read
+        end
+      end, out, err
+    end
+
+    def die
+      super
+      @pid = nil
+      Process.wait
+    end
+  end
+
+  class JavaBalancerProcess < BalancerProcess
+    def start server_command
+      require 'java'
+      pb = java.lang.ProcessBuilder.new(server_command.split)
+      ENV.each do |key, val|
+        pb.environment[key] = val
+      end
+      @process = pb.start()
+      return Class.new(StreamPumper) do
+        def data_available?
+          @stream.ready
+        end
+
+        def read
+          @stream.read_line
+        end
+
+        def stop_pumping!
+          super
+          @stream.close
+        end
+      end, buf_reader(@process.input_stream), buf_reader(@process.error_stream)
+    end
+
+    def buf_reader stream
+      java.io.BufferedReader.new(java.io.InputStreamReader.new(stream))
+    end
+
+    def die
+      super
+      @process.destroy
+      @process.waitFor
+      @process = nil
+    end
+  end
+
+  def self.balancer_process_type
+    can_fork? ? ForkBalancerProcess : JavaBalancerProcess
   end
 
   def self.start_server
     ENV[TLB_APP] = 'tlb.balancer.BalancerInitializer'
-    @pid, input, out, err = Open4.popen4(server_command)
-    @out_pumper = stream_pumper_for(out, TLB_OUT_FILE)
-    @err_pumper = stream_pumper_for(err, TLB_ERR_FILE)
+    bal_klass = balancer_process_type
+    @balancer_process = bal_klass.new(server_command)
     Balancer.wait_for_start
   end
 
-  def self.stream_pumper_for stream, dump_file
-    Thread.new do
-      loop do
-        stream.eof? || write_to_file(dump_file, stream.read)
-        Thread.current[:stop_pumping] && break
-        sleep 1
-      end
-    end
-  end
-
   def self.stop_server
-    Process.kill(Signal.list["TERM"], @pid)
-    @pid = nil
-    @out_pumper[:stop_pumping] = true
-    @err_pumper[:stop_pumping] = true
-    @out_pumper.join
-    @err_pumper.join
-    Process.wait
+    @balancer_process.die
   end
 end

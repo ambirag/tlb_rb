@@ -19,9 +19,9 @@ TLB Documentation: Detailed configuration documentation can be found at http://t
 -------------------------------------------------------------------------
 TLB Example(s): We maintain a directory of tlb-enabled dummy projects written in different languages using different testing and build frameworks to help new TLB users get started and provide people a working project to refer to while hooking up TLB on their project(s). Each of these projects have a shell script(named run_balanced.sh) that is meant to demonstrate a typical tlb-enabled build(by starting a local tlb server, and executing two partitions that run dummy tests locally).
 For demonstration purpose, aforementioned shell script executes partitions in the example-project one after another(serially). However, partitions will be executed parallely on different machines in a real-world setup(hence cutting the build time).
-We recomend playing with the configuration-variable values being set in the shell-script(s) to understand the effect different values have on load-balancing/reordering behaviour. You may want to check http://test-load-balancer.github.com, which links to 'detailed documentation' that covers each configuration variable and explains its purpose, effect and implecation.
+We recommend playing with the configuration-variable values being set in the shell-script(s) to understand the effect different values have on load-balancing/reordering behavior. You may want to check http://test-load-balancer.github.com, which links to 'detailed documentation' that covers each configuration variable and explains its purpose, effect and implication.
 
-Examples archive is released alongwith TLB, and is available for download at http://code.google.com/p/tlb/downloads/list.
+Examples archive is released along-with TLB, and is available for download at http://code.google.com/p/tlb/downloads/list.
 
 To execute the example project, drop into the example project directory(examples/rspec2_example for instance) and invoke the './run_balanced.sh'.
 

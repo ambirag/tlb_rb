@@ -1,6 +1,5 @@
 require File.join(File.dirname(__FILE__), 'spec_helper')
 require 'open4'
-require 'parsedate'
 require 'tmpdir'
 require 'webrick'
 
@@ -11,23 +10,21 @@ describe Tlb do
   before :all do
     ENV['TLB_APP'] = 'tlb.server.TlbServerInitializer'
     server_jar = File.expand_path(Dir.glob(File.join(File.dirname(__FILE__), "tlb-server*")).first)
-    @pid, i, o, e = Open4.popen4("java -jar #{server_jar}")
+    klass = Tlb.balancer_process_type
+    @process = klass.new("java -jar #{server_jar}")
+
+    ENV[Tlb::TLB_OUT_FILE] = (@out_file = tmp_file('tlb_out_file').path)
+    ENV[Tlb::TLB_ERR_FILE] = (@err_file = tmp_file('tlb_err_file').path)
   end
 
   after :all do
-    Process.kill(Signal.list['KILL'], @pid)
-  end
-
-  it "should wait for balancer server to come up before returning from start_server" do
-    Tlb::Balancer.expects(:wait_for_start)
-    Open4.stubs(:popen4)
-    Tlb.start_server
+    Process.kill(Signal.list['KILL'], @process.instance_variable_get("@pid")) if @process.kind_of?(Tlb::ForkBalancerProcess)
+    @process.instance_variable_get("@process").destroy if @process.kind_of?(Tlb::JavaBalancerProcess)
+    @process.stop_pumping
   end
 
   describe "using server" do
     before do
-      ENV[Tlb::TLB_OUT_FILE] = (@out_file = tmp_file('tlb_out_file').path)
-      ENV[Tlb::TLB_ERR_FILE] = (@err_file = tmp_file('tlb_err_file').path)
       Tlb.server_running?.should be_false #precondition (the server must be started if not running)
 
       ENV['TLB_BALANCER_PORT'] = TLB_BALANCER_PORT
@@ -104,37 +101,20 @@ describe Tlb do
   end
 
   describe :wait_for_server_to_start do
-    class CtrlStatus < WEBrick::HTTPServlet::AbstractServlet
-      def do_GET(request, response)
-        response.status = 200
-        response['Content-Type'] = 'text/plain'
-        response.body = 'RUNNING'
-      end
-    end
     before do
-      @server = nil
       ENV['TLB_BALANCER_PORT'] = TLB_BALANCER_PORT
+      ENV['SLEEP_BEFORE_STATUS'] = '3'
+      klass = Tlb.balancer_process_type
+      @mock_balancer = klass.new("#{File.join(File.dirname(__FILE__), "fixtures", "mock_balancer.rb")}")
     end
 
     after do
-      @server.shutdown
+      @mock_balancer.die
     end
 
     it "should wait until socket has a listener" do
-      @wait_completed = false
       before_start = Time.now
-      wait_thread = Thread.new do
-        sleep 3
-        @wait_completed = true
-        @server = WEBrick::HTTPServer.new(:Port => TLB_BALANCER_PORT,
-                                          :Logger => WEBrick::BasicLog.new(tmp_file('tlb_webrick_log').path),
-                                          :AccessLog => WEBrick::BasicLog.new(tmp_file('tlb_webrick_access_log').path))
-        @server.mount '/control/status', CtrlStatus
-        @server.start
-      end
-      @wait_completed.should be_false
       Tlb::Balancer.wait_for_start
-      @wait_completed.should be_true
       Time.now.should > (before_start + 3)
     end
   end

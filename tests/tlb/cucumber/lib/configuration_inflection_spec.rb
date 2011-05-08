@@ -1,19 +1,19 @@
-require File.join(File.dirname(__FILE__), '..', '..', 'spec_helper')
-require 'tlb/cucumber/configuration_inflection'
+require File.join(File.dirname(__FILE__), '..', '..', '..', 'spec_helper')
+require 'tlb/cucumber/lib/configuration_inflection'
 
-describe Tlb::Cucumber::ConfigurationInflection do
+describe Tlb::Cucumber::Lib::ConfigurationInflection do
   it "should be included in cucumber-cli-configuration" do
-    Cucumber::Cli::Configuration.included_modules.should include(Tlb::Cucumber::ConfigurationInflection)
+    Cucumber::Cli::Configuration.included_modules.should include(Tlb::Cucumber::Lib::ConfigurationInflection)
   end
 
-  it "should call splitter and observer on run_suite when included" do
+  it "should call prune features when all features are obtained" do
     mediator = Class.new do
       attr_accessor :feature_files_called
       def feature_files
         @feature_files_called = true
         :foo
       end
-      include Tlb::Cucumber::ConfigurationInflection
+      include Tlb::Cucumber::Lib::ConfigurationInflection
     end.new
 
     mediator.expects(:prune_features).returns(:foo) do

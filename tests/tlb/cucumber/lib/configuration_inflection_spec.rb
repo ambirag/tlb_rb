@@ -45,4 +45,27 @@ describe Tlb::Cucumber::Lib::ConfigurationInflection do
     formatters.first.should == :formatter_one
     formatters.last.class.should == Tlb::Cucumber::Lib::RunDataFormatter
   end
+
+  it "should not inflect if it already has" do
+    mediator = Class.new do
+      def feature_files
+        :foo
+      end
+
+      def formatters(does_not_matter)
+        [:formatter_one]
+      end
+      include Tlb::Cucumber::Lib::ConfigurationInflection
+    end.new
+
+    formatters = mediator.formatters("ignore")
+    formatters.size.should == 2
+
+    class << mediator
+      include Tlb::Cucumber::Lib::ConfigurationInflection
+    end
+
+    formatters = mediator.formatters("ignore")
+    formatters.size.should == 2
+  end
 end

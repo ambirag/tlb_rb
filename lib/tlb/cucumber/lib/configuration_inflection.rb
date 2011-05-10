@@ -10,11 +10,13 @@ module Tlb
         include Tlb::Cucumber::Lib::TestSplitter
 
         def self.included base
-          base.send(:alias_method, :all_feature_files, :feature_files)
-          base.send(:remove_method, :feature_files)
-          base.send(:alias_method, :all_formatters, :formatters)
-          base.send(:remove_method, :formatters)
-          base.send(:include, InstanceMethods)
+          unless base.included_modules.include?(InstanceMethods)
+            base.send(:alias_method, :all_feature_files, :feature_files)
+            base.send(:remove_method, :feature_files)
+            base.send(:alias_method, :all_formatters, :formatters)
+            base.send(:remove_method, :formatters)
+            base.send(:include, InstanceMethods)
+          end
         end
 
         module InstanceMethods

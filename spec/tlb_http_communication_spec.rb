@@ -23,6 +23,13 @@ describe Tlb do
     @process.stop_pumping
   end
 
+  it "should use default balancer-port if none given" do
+    ENV['TLB_BALANCER_PORT'] = nil
+    Tlb::Balancer.port.should == '8019'
+    ENV['TLB_BALANCER_PORT'] = '9898'
+    Tlb::Balancer.port.should == '9898'
+  end
+
   describe "using server" do
     before do
       Tlb.server_running?.should be_false #precondition (the server must be started if not running)

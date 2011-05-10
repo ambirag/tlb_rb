@@ -23,4 +23,5 @@ end
 task :package do
   `gem build tlb-rspec2.gemspec`
   `gem build tlb-testunit.gemspec`
+  `gem build tlb-cucumber.gemspec`
 end

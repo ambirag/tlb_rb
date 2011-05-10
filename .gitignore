@@ -5,3 +5,4 @@ tlb-*.jar
 .yardoc
 doc
 *.gem
+.emacs_project

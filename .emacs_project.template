@@ -1,3 +1,5 @@
+;; copy me as .emacs_project in project root if using .emacs.d = git://github.com/janmejay/emacs.git
+;; after copying it across, modify the file to make it relevant to local rvm setup
 (setq rspec-executable "rspec")
 (setq rb_platform "jruby")
 (setq rb_platform "mri")

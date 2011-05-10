@@ -23,7 +23,7 @@ module Tlb
     end
 
     def self.port
-      ENV[TLB_BALANCER_PORT]
+      ENV[TLB_BALANCER_PORT] || '8019'
     end
 
     def self.send path, data

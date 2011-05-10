@@ -10,7 +10,7 @@ module Tlb
 
         def initialize(*args)
           super(args) do |this|
-            yeild this if block_given?
+            yield this if block_given?
             this.cucumber_opts ||= []
             this.cucumber_opts = [this.cucumber_opts, '--format', 'Tlb::Cucumber::Lib::RunDataFormatter'].flatten
             this.cucumber_opts = [this.cucumber_opts, "#{File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib'))}", 'features'].flatten

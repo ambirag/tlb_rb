@@ -12,7 +12,6 @@ module Tlb
           super(args) do |this|
             yield this if block_given?
             this.cucumber_opts ||= []
-            this.cucumber_opts = [this.cucumber_opts, '--format', 'Tlb::Cucumber::Lib::RunDataFormatter'].flatten
             this.cucumber_opts = [this.cucumber_opts, "#{File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib'))}", 'features'].flatten
           end
         end

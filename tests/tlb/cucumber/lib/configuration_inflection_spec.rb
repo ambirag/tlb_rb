@@ -1,5 +1,6 @@
 require File.join(File.dirname(__FILE__), '..', '..', '..', 'spec_helper')
 require 'tlb/cucumber/lib/configuration_inflection'
+require 'tlb/cucumber/lib/run_data_formatter'
 
 describe Tlb::Cucumber::Lib::ConfigurationInflection do
   it "should be included in cucumber-cli-configuration" do
@@ -13,6 +14,10 @@ describe Tlb::Cucumber::Lib::ConfigurationInflection do
         @feature_files_called = true
         :foo
       end
+
+      def formatters(not_used)
+      end
+
       include Tlb::Cucumber::Lib::ConfigurationInflection
     end.new
 
@@ -21,5 +26,23 @@ describe Tlb::Cucumber::Lib::ConfigurationInflection do
     end
     mediator.feature_files.should == :foo
     mediator.feature_files_called.should be_true
+  end
+
+  it "should add RunDataFormatter as a formatter" do
+    mediator = Class.new do
+      def feature_files
+        :foo
+      end
+
+      def formatters(does_not_matter)
+        [:formatter_one]
+      end
+      include Tlb::Cucumber::Lib::ConfigurationInflection
+    end.new
+
+    formatters = mediator.formatters("ignore")
+    formatters.size.should == 2
+    formatters.first.should == :formatter_one
+    formatters.last.class.should == Tlb::Cucumber::Lib::RunDataFormatter
   end
 end

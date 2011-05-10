@@ -4,3 +4,4 @@ tlb_store
 tlb-*.jar
 .yardoc
 doc
+*.gem

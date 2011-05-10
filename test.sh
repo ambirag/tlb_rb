@@ -37,6 +37,6 @@ run_tests_with() {
     rake test
 }
 
-run_tests_with ruby-1.8.7-head@tlb
+run_tests_with ruby-1.8.7-p334@tlb
 
 run_tests_with jruby-1.5.6@tlb

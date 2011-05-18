@@ -1,19 +1,18 @@
+NAME = "tlb-#{$module_name}"
 BASE_DIR = File.dirname(__FILE__)
-LIB_TLB = File.join(BASE_DIR, "lib", "tlb")
-TEST_DIR = File.join(BASE_DIR, "tests")
+LIB_DIR = "lib"
 TAG_VERSION = `git describe --abbrev=0`.gsub(/^v/, '')
 CODE_VERSION = `git describe --always`
 AUTHORS = ["Janmejay Singh", "Pavan KS"]
 EMAIL = "singh.janmejay@gmail.com;itspanzi@gmail.com"
 HOME_PAGE = "http://github.com/test-load-balancer/tlb.rb"
-SUMMARY = "#{$name}-#{CODE_VERSION}"
-DESC = <<END
-TLB ruby implementation base, which provides support for load balancing tests written in #{$framework}.
-TLB.rb test suite is not bundled, please check http://github.com/test-load-balancer/tlb.rb for tests.
-Detailed documentation is available at http://test-load-balancer.github.com.
+SUMMARY = "#{NAME}-#{CODE_VERSION}"
+$description ||= <<END
+TLB-Ruby component that provides support for load balancing tests written using #{$framework}. This library consumes APIs provided by tlb-core.
 END
-POST_INSTALL_MESSAGE = <<END
--------------------------------------------------------------------------
+
+$post_install_message ||= <<END
+=========================================================================
 Documentation: Detailed configuration documentation can be found at http://test-load-balancer.github.com. Documentation section in this website hosts documentation for every public release.
 
 -------------------------------------------------------------------------
@@ -31,36 +30,42 @@ To execute the example project, drop into the example project directory(examples
 -------------------------------------------------------------------------
 Issue Tracker: http://code.google.com/p/tlb/issues/list
 
--------------------------------------------------------------------------
+=========================================================================
 END
 RUBYFORGE_PROJECT = "tlb-rb"
 RUBYGEMS_VERSION = "1.3.7"
 
-def files *exclude_dirs
-  files = `git ls-files`.split("\n")
-  files += Dir.glob(File.join(File.dirname(__FILE__), "*.jar")).map { |path| File.basename(path) }
-  exclude_dirs.inject(files) { |files, dir| files - `git ls-files #{dir}`.split("\n") }
+
+def module_files
+  files = `git ls-files #{$module_name}/#{LIB_DIR}`.split("\n")
+end
+
+def depends_on_core s
+  s.add_runtime_dependency 'tlb-core', "#{TAG_VERSION}"
 end
 
 
 def configure_tlb s
-  s.name        = $name
+  s.name        = NAME
   s.version     = TAG_VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = AUTHORS
   s.email       = EMAIL
   s.homepage    = HOME_PAGE
   s.summary     = SUMMARY
-  s.description = DESC
+  s.description = $description
 
   s.rubyforge_project = RUBYFORGE_PROJECT
   s.rubygems_version = RUBYGEMS_VERSION
 
-  s.post_install_message = POST_INSTALL_MESSAGE
+  s.post_install_message = $post_install_message
 
   s.extra_rdoc_files = [ "README.markdown" ]
   s.rdoc_options     = ["--charset=UTF-8"]
-  s.require_path     = "lib"
+
+  s.files = module_files
+
+  s.require_path     = "#{$module_name}/#{LIB_DIR}"
 
   s.add_runtime_dependency 'open4', '>= 1.0.1'
   s.add_runtime_dependency 'rake'

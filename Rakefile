@@ -1,12 +1,20 @@
 require 'rspec/core/rake_task'
 require 'rake/testtask'
 
-task :test => ['test:rspec', 'test:test_unit']
+task :test => 'test:1_8'
 
 namespace :test do
-  RSpec::Core::RakeTask.new(:rspec) do |t|
-    t.pattern = '**/*_spec.rb'
+  task '1_8' => [:core, :rspec2, :testunit, :cucumber, :test_unit]
+
+  def specs_for *mod_names
+    mod_names.each do |mod_name|
+      RSpec::Core::RakeTask.new(mod_name) do |t|
+        t.pattern = "#{mod_name}/test/**/*_spec.rb"
+      end
+    end
   end
+
+  specs_for :core, :rspec2, :cucumber, :testunit
 
   Rake::TestTask.new(:test_unit) do |t|
     t.test_files = FileList['**/*_test.rb']
@@ -21,6 +29,7 @@ task :build_tlb do
 end
 
 task :package do
+  `gem build tlb-core.gemspec`
   `gem build tlb-rspec2.gemspec`
   `gem build tlb-testunit.gemspec`
   `gem build tlb-cucumber.gemspec`

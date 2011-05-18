@@ -1,3 +1,4 @@
+require 'rubygems'
 require 'tlb'
 require 'tlb/test_unit/test_splitter'
 require 'tlb/test_unit/test_observer'

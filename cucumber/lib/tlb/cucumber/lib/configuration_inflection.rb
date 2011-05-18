@@ -1,3 +1,4 @@
+require 'rubygems'
 require 'cucumber/cli/configuration'
 require 'tlb'
 require 'tlb/cucumber/lib/test_splitter'

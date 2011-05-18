@@ -1,3 +1,4 @@
+require 'rubygems'
 require 'rspec/core/reporter'
 require 'tlb'
 require 'tlb/rspec/spec_formatter'

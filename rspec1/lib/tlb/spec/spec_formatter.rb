@@ -1,4 +1,5 @@
 require 'spec/runner/formatter/silent_formatter'
+require 'rubygems'
 require 'tlb'
 
 class Tlb::SpecFormatter < Spec::Runner::Formatter::SilentFormatter

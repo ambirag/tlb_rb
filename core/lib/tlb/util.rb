@@ -1,4 +1,4 @@
-require File.expand_path(File.join(File.dirname(__FILE__), '..', 'tlb'))
+require 'tlb'
 
 module Tlb::Util
   def self.quote_path *fragments

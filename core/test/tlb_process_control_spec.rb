@@ -1,6 +1,7 @@
 require File.join(File.dirname(__FILE__), 'spec_helper')
 require 'open4'
 require 'tmpdir'
+require 'tlb'
 
 describe Tlb do
   before do

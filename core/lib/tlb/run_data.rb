@@ -1,4 +1,4 @@
-require File.expand_path(File.join(File.dirname(__FILE__), '..', 'tlb'))
+require 'tlb'
 
 module Tlb::RunData
   class Suite < Struct.new(:identity, :start_time, :end_time, :failed)

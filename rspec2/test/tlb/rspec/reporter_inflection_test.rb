@@ -1,5 +1,4 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'test_helper')
-require 'tlb'
 require 'stringio'
 
 require 'tlb/rspec/reporter_inflection'

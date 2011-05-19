@@ -2,11 +2,6 @@ require 'rubygems'
 require 'open4'
 require 'net/http'
 
-TLB_RB_LIB = File.expand_path(File.dirname(__FILE__))
-unless $LOAD_PATH.include? TLB_RB_LIB
-  $LOAD_PATH << TLB_RB_LIB
-end
-
 module Tlb
   TLB_OUT_FILE = 'TLB_OUT_FILE'
   TLB_ERR_FILE = 'TLB_ERR_FILE'

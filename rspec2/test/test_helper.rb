@@ -1,2 +1,2 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'test-common', 'test_helper')
-require File.join(File.dirname(__FILE__), '..', 'lib', 'tlb-rspec2')
+add_module_to_path File.join(File.dirname(__FILE__), '..')

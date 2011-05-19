@@ -1,4 +1,4 @@
-## Using tlb_rb:
+## Using tlb.rb:
 
 tlb.rb uses [tlb](https://github.com/test-load-balancer/tlb "TLB") under the hood. It runs a sub-process which talks to the actual tlb-server(or equivallent) to balance and post run-feedback.
 Balancer process is actually an HTTP server which listen to a certain TCP port so tlb-ruby library can talk to it. 

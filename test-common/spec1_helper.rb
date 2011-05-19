@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), 'spec_common')
-require 'rspec'
+require 'spec'
 
-RSpec.configure do |config|
+Spec::Runner.configure do |config|
   config.mock_with :mocha
 end

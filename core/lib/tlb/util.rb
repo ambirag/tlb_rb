@@ -5,7 +5,11 @@ module Tlb::Util
     single_quote(File.expand_path(File.join(*fragments)))
   end
 
-  def self.single_quote arg
-    "'#{arg.gsub(/'/, "\\'")}'"
+  def self.single_quote str
+    "'#{escape_quote(str)}'"
+  end
+
+  def self.escape_quote str
+    str.gsub(/'/, "\\'")
   end
 end

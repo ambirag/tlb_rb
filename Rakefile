@@ -7,6 +7,7 @@ task :test => 'test:1_8'
 
 namespace :test do
   task '1_8' => [:core, :rspec2, :testunit, :cucumber, :test_unit, :rspec1]
+  task '1_9' => [:core, :rspec2, :cucumber, :test_unit, :rspec1]
 
   def specs_for *mod_names
     mod_names.each do |mod_name|

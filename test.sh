@@ -39,4 +39,8 @@ run_tests_with() {
 
 run_tests_with ruby-1.8.7-p334@tlb
 
-run_tests_with jruby-1.5.6@tlb
+run_tests_with ruby-1.9.2-head@tlb
+
+run_tests_with jruby-1.6.0@tlb
+
+

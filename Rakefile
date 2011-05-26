@@ -37,7 +37,8 @@ end
 task :package => :test do
   `gem build tlb-core.gemspec`
   `gem build tlb-rspec2.gemspec`
-  `gem build tlb-testunit.gemspec`
+  `gem build tlb-testunit18.gemspec`
+  `gem build tlb-testunit19.gemspec`
   `gem build tlb-cucumber.gemspec`
   `gem build tlb-rspec1.gemspec`
 end

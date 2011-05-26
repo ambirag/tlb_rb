@@ -12,11 +12,18 @@ projects="
 configurations="
 ruby-1.9.2-head@test-tlb
 jruby-head@test-tlb
-ruby-1.8.7-p334@test-tlb 
+ruby-1.8.7-head@test-tlb
 "
 
 for conf in $configurations; do 
-    run_command_with $conf gem install *.gem
+    echo $conf | grep -q '1.9'
+    negate_gem_named=''
+    if [[ $? -eq 0 ]]; then
+        negate_gem_named='1.8'
+    else
+        negate_gem_named='1.9'
+    fi 
+    run_command_with $conf "ls *.gem | grep -v $negate_gem_named | xargs gem install"
     for dir in $projects; do 
         echo "-----" 
         echo "######################### running $dir -- using $conf #########################"

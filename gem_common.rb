@@ -1,4 +1,4 @@
-NAME = "tlb-#{$module_name}"
+$name ||= "tlb-#{$module_name}"
 BASE_DIR = File.dirname(__FILE__)
 LIB_DIR = "lib"
 TAG_VERSION = `git describe --abbrev=0`.gsub(/^v/, '')
@@ -6,7 +6,7 @@ CODE_VERSION = `git describe --always`
 AUTHORS = ["Janmejay Singh", "Pavan KS"]
 EMAIL = "singh.janmejay@gmail.com;itspanzi@gmail.com"
 HOME_PAGE = "http://github.com/test-load-balancer/tlb.rb"
-SUMMARY = "#{NAME}-#{CODE_VERSION}"
+SUMMARY = "#{$name}-#{CODE_VERSION}"
 $description ||= <<END
 TLB-Ruby component that provides support for load balancing tests written using #{$framework}. This library consumes APIs provided by tlb-core.
 END
@@ -46,7 +46,7 @@ end
 
 
 def configure_tlb s
-  s.name        = NAME
+  s.name        = $name
   s.version     = TAG_VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = AUTHORS
@@ -67,6 +67,5 @@ def configure_tlb s
 
   s.require_path     = "#{$module_name}/#{LIB_DIR}"
 
-  s.add_runtime_dependency 'open4', '>= 1.0.1'
   s.add_runtime_dependency 'rake'
 end

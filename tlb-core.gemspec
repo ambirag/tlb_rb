@@ -21,6 +21,7 @@ require File.join(File.dirname(__FILE__), 'gem_common')
 
 Gem::Specification.new do |s|
   configure_tlb(s)
+  s.add_runtime_dependency 'open4', '>= 1.0.1'
   s.files = module_files + Dir.glob(File.join(File.dirname(__FILE__), 'core', 'tlb-alien*.jar'))
 end
 

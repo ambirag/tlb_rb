@@ -1,11 +1,13 @@
 require 'rubygems'
 require 'open4'
 require 'net/http'
+require 'timeout'
 
 module Tlb
   TLB_OUT_FILE = 'TLB_OUT_FILE'
   TLB_ERR_FILE = 'TLB_ERR_FILE'
   TLB_APP = 'TLB_APP'
+  DEFAULT_TLB_BALANCER_STARTUP_TIME = '120'
 
   module Balancer
     TLB_BALANCER_PORT = 'TLB_BALANCER_PORT'
@@ -220,11 +222,19 @@ module Tlb
     can_fork? ? ForkBalancerProcess : JavaBalancerProcess
   end
 
+  def self.max_startup_time
+    (ENV['TLB_BALANCER_STARTUP_MAXTIME'] || DEFAULT_TLB_BALANCER_STARTUP_TIME).to_i
+  end
+
   def self.start_server
-    ENV[TLB_APP] = 'tlb.balancer.BalancerInitializer'
-    bal_klass = balancer_process_type
-    @balancer_process = bal_klass.new(server_command)
-    Balancer.wait_for_start
+    Timeout::timeout(max_startup_time) do
+      ENV[TLB_APP] = 'tlb.balancer.BalancerInitializer'
+      bal_klass = balancer_process_type
+      @balancer_process = bal_klass.new(server_command)
+      Balancer.wait_for_start
+    end
+  rescue Timeout::Error => e
+    raise "TLB server failed to start in 2 seconds. This usually happens when TLB configuration(environment variables) is incorrect. Please check your environment variable configuration."
   end
 
   def self.stop_server

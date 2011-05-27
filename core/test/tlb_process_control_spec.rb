@@ -72,4 +72,26 @@ describe Tlb do
       sub_process_env['TLB_SPLITTER'].should == 'foo.bar.baz.Quux'
     end
   end
+
+  it "should timeout with suggestive error message if server takes too long to start" do
+    Tlb.stubs(:max_startup_time).returns(2)
+
+    Tlb.stubs(:server_command).with do
+      sleep 10
+    end
+
+    lambda { Tlb.start_server }.should raise_error("TLB server failed to start in 2 seconds. This usually happens when TLB configuration(environment variables) is incorrect. Please check your environment variable configuration.")
+  end
+
+  it "should use configured value as balancer start timeout" do
+    ENV['TLB_BALANCER_STARTUP_MAXTIME'] = "100"
+
+    Tlb.max_startup_time.should == 100
+  end
+
+  it "should use default value if nothing configured as max balancer startup time" do
+    ENV['TLB_BALANCER_STARTUP_MAXTIME'] = nil
+
+    Tlb.max_startup_time.should == 120
+  end
 end

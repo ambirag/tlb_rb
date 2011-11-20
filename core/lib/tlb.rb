@@ -130,7 +130,7 @@ module Tlb
       end
 
       def flush_stream
-        File.open(ENV[@file], 'a') do |h|
+        File.open(stream_file_path, 'a') do |h|
           h.write(read)
         end
       end
@@ -138,6 +138,10 @@ module Tlb
       def stop_pumping!
         @thd[:stop_pumping] = true
         @thd.join
+      end
+
+      def stream_file_path
+        ENV[@file] || File.join(Dir.pwd, @file.downcase)
       end
     end
 

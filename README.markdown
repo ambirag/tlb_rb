@@ -7,9 +7,11 @@ This is controlled by an environment variable named *'TLB_BALANCER_PORT'*, which
 In addition to this extra environment variable, the usual TLB environment variable setup is required(so the balancer knows things like what partitioning algorithm to use or the type of server it has to talk to etc). 
 Detailed documentation of TLB environment variable configuration is available at [http://test-load-balancer.github.com](http://test-load-balancer.github.com "Tlb Documentation")
 
+## Supported frameworks
+
 __tlb.rb__ supports RSpec(1.x and 2.x), Cucumber and Test::Unit, which are the most widely used testing frameworks in the Ruby world. 
 
-__tlb.rb__ is fully compatible with both Ruby 1.9 and 1.8 across __MRI__ and __JRuby__. However, 1.9 support will be available only version 0.3.2 onwards.
+__tlb.rb__ is fully compatible with both Ruby 1.9 and 1.8 across __MRI__ and __JRuby__. However, 1.9 support is available only from version 0.3.2 onwards.
 
 We test __tlb.rb__ on MRI and JRuby, however it should work with other flavours of Ruby(like REE) as well.
 

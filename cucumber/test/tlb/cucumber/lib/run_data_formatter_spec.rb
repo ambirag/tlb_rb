@@ -7,7 +7,7 @@ describe Tlb::Cucumber::Lib::RunDataFormatter do
   before do
     @formatter = Tlb::Cucumber::Lib::RunDataFormatter.new()
     Cucumber::WINDOWS = false unless defined? Cucumber::WINDOWS
-    @feature = Cucumber::Ast::Feature.new(nil, nil, nil, nil, "Subtraction", nil)
+    @feature = Cucumber::Ast::Feature.new(nil, nil, nil, nil, "Subtraction", nil, nil)
     @feature.file = "./features/sub.feature"
   end
 

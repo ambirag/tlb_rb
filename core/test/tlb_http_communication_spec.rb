@@ -1,4 +1,5 @@
 require File.join(File.dirname(__FILE__), 'spec_helper')
+require 'tlb'
 require 'open4'
 require 'tmpdir'
 require 'webrick'
@@ -112,7 +113,7 @@ describe Tlb do
       ENV['TLB_BALANCER_PORT'] = TLB_BALANCER_PORT
       ENV['SLEEP_BEFORE_STATUS'] = '3'
       klass = Tlb.balancer_process_type
-      @mock_balancer = klass.new("#{File.join(File.dirname(__FILE__), "fixtures", "mock_balancer.rb")}")
+      @mock_balancer = klass.new("ruby #{File.join(File.dirname(__FILE__), "fixtures", "mock_balancer.rb")}")
     end
 
     after do

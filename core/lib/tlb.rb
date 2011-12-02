@@ -9,11 +9,17 @@ module Tlb
   TLB_APP = 'TLB_APP'
   DEFAULT_TLB_BALANCER_STARTUP_TIME = '120'
 
+  TLB_MODULE_NAME = 'tlb_module_name'
+
+  class Tlb::Error < RuntimeError; end
+
   module Balancer
     TLB_BALANCER_PORT = 'TLB_BALANCER_PORT'
     BALANCE_PATH = '/balance'
     SUITE_TIME_REPORTING_PATH = '/suite_time'
     SUITE_RESULT_REPORTING_PATH = '/suite_result'
+    ALL_PARTITIONS_EXECUTED_ASSERTION_PATH = '/assert_all_partitions_executed'
+    TLB_MODULE_NAME = 'X-TLB-MODULE-NAME'
 
     def self.host
       'localhost'
@@ -23,16 +29,33 @@ module Tlb
       ENV[TLB_BALANCER_PORT] || '8019'
     end
 
-    def self.send path, data
+    def self.invoke &action
       Net::HTTP.start(host, port) do |h|
-        res = h.post(path, data)
-        res.value
-        res.body
+        res = action.call(h)
+        body_text = nil
+        begin
+          body_text = res.body
+        rescue
+        end
+        begin
+          res.value
+        rescue
+          throw $!.message + ' Details: { ' + body_text + ' }'
+        end
+        body_text
       end
     end
 
-    def self.get path
-      Net::HTTP.get_response(host, path, port).body
+    def self.send path, data, headers = { }
+      invoke do |h|
+        h.post(path, data, headers)
+      end
+    end
+
+    def self.get path, headers = { }
+      invoke do |h|
+        h.get(path, headers)
+      end
     end
 
     def self.running?
@@ -54,6 +77,16 @@ module Tlb
         end
       end
     end
+
+    def self.additional_headers header_map
+      actual_headers = { }
+      header_map.each do |key, value|
+        unless value.nil?
+          actual_headers[key] = value
+        end
+      end
+      actual_headers
+    end
   end
 
   module RSpec
@@ -71,9 +104,14 @@ module Tlb
     file_names.map { |file_name| relative_file_path(file_name) }
   end
 
-  def self.balance_and_order file_set
+  def self.balance_and_order(file_set, submodule_name = nil)
     ensure_server_running
-    Balancer.send(Balancer::BALANCE_PATH, file_set.join("\n")).split("\n")
+    Balancer.send(Balancer::BALANCE_PATH, file_set.join("\n"), Balancer.additional_headers(Balancer::TLB_MODULE_NAME => submodule_name)).split("\n")
+  end
+
+  def self.assert_all_partitions_executed(submodule_name = nil)
+    ensure_server_running
+    Balancer.get(Balancer::ALL_PARTITIONS_EXECUTED_ASSERTION_PATH, Balancer.additional_headers(Balancer::TLB_MODULE_NAME => submodule_name))
   end
 
   def self.suite_result suite_name, result

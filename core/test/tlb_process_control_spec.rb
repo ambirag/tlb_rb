@@ -58,7 +58,7 @@ describe Tlb do
     end
 
     it "should pump error and output stream out to the corresponding files" do
-      Tlb::Balancer.get("/echo").should == "" #assertion in after(is flaky if assertions are kept here
+      Tlb::Balancer.get("/echo").should == ""
       @after_stop = proc do
         File.read(@out_file).should include("'Hello World!' to stdout")
         File.read(@err_file).should include("'Hello World!' to stderr")

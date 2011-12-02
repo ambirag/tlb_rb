@@ -17,7 +17,7 @@ describe Tlb::TestUnit::TestTask do
       t.verbose = true
     end
 
-    test_task.ruby_opts.should == [" -r'#{@path_to_mediator_inflection}' "]
+    test_task.ruby_opts.should == [" -r'#{Tlb::ArgProcessor::FILE}' ", " -r'#{@path_to_mediator_inflection}' "]
     test_task.libs.should include("foo")
     test_task.instance_variable_get('@test_files').should == ['test/foo_test.rb', 'test/bar_test.rb', 'test/baz_test.rb']
     test_task.verbose.should be_true
@@ -30,12 +30,27 @@ describe Tlb::TestUnit::TestTask do
       t.ruby_opts << " -rbaz/quux "
     end
 
-    test_task.ruby_opts.should == [" -r'#{@path_to_mediator_inflection}' ",
+    test_task.ruby_opts.should == [" -r'#{Tlb::ArgProcessor::FILE}' ",
+                                   " -r'#{@path_to_mediator_inflection}' ",
                                    " -Ifoo/bar ",
                                    " -rbaz/quux "]
   end
 
   it "should use given name" do
     Tlb::TestUnit::TestTask.new(:foo_bar).name.should == :foo_bar
+  end
+
+  it "should set module name as environment variable when given" do
+    test_task = Tlb::TestUnit::TestTask.new(:task_with_module_name) do |t|
+      t.tlb_module_name = 'foo_bar_module'
+      t.test_files = [DUMP_ENV_RUBY_SCRIPT]
+    end
+    test_task.option_list.should include("-Arg:tlb_module_name=foo_bar_module")
+  end
+
+  it "should not set tlb_module_name when not given" do
+    test_task = Tlb::TestUnit::TestTask.new do |t|
+    end
+    test_task.option_list.should_not include("-Arg:tlb_module_name")
   end
 end

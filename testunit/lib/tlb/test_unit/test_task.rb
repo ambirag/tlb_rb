@@ -16,6 +16,6 @@ class Tlb::TestUnit::TestTask < Rake::TestTask
   end
 
   def option_list
-    tlb_module_name ? (super + " -Arg:tlb_module_name=#{tlb_module_name} ") : super
+    tlb_module_name ? (super + " -Arg:#{Tlb::TLB_MODULE_NAME}=#{tlb_module_name} ") : super
   end
 end

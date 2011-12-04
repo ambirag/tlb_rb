@@ -27,12 +27,26 @@ describe Tlb::TestUnit::TestSplitter do
 
       include Tlb::TestUnit::TestSplitter
     end.new(@main_suite)
+    Tlb::ArgProcessor.reset!
+  end
+
+  after do
+    Tlb::ArgProcessor.reset!
   end
 
   it "should call actual runner method with pruned suite after balancing and reordering" do
-    Tlb.expects(:balance_and_order).with(["FooBarBazTest", "QuuxBangBoomTest", "HellYeahTest", "HelloWorldTest"]).returns(["QuuxBangBoomTest", "HellYeahTest"])
+    Tlb.expects(:balance_and_order).with(["FooBarBazTest", "QuuxBangBoomTest", "HellYeahTest", "HelloWorldTest"], nil).returns(["QuuxBangBoomTest", "HellYeahTest"])
     @mediator.prune_suite
     @mediator.suite.name.should == "main_test"
     @mediator.suite.tests.map { |test| test.name }.should == ["QuuxBangBoomTest", "HellYeahTest"]
+  end
+
+  it "should call balancer for splitting/reordering with module name, when given" do
+    ARGV << "-Arg:#{Tlb::TLB_MODULE_NAME}=foo-module"
+    Tlb::ArgProcessor.parse!
+    Tlb.expects(:balance_and_order).with(["FooBarBazTest", "QuuxBangBoomTest", "HellYeahTest", "HelloWorldTest"], 'foo-module').returns(["HellYeahTest", "QuuxBangBoomTest"])
+    @mediator.prune_suite
+    @mediator.suite.name.should == "main_test"
+    @mediator.suite.tests.map { |test| test.name }.should == ["HellYeahTest", "QuuxBangBoomTest"]
   end
 end

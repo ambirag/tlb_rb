@@ -19,7 +19,7 @@ module Tlb
     SUITE_TIME_REPORTING_PATH = '/suite_time'
     SUITE_RESULT_REPORTING_PATH = '/suite_result'
     ALL_PARTITIONS_EXECUTED_ASSERTION_PATH = '/assert_all_partitions_executed'
-    TLB_MODULE_NAME = 'X-TLB-MODULE-NAME'
+    TLB_MODULE_NAME_HEADER = 'X-Tlb-Module-Name'
 
     def self.host
       'localhost'
@@ -106,12 +106,12 @@ module Tlb
 
   def self.balance_and_order(file_set, submodule_name = nil)
     ensure_server_running
-    Balancer.send(Balancer::BALANCE_PATH, file_set.join("\n"), Balancer.additional_headers(Balancer::TLB_MODULE_NAME => submodule_name)).split("\n")
+    Balancer.send(Balancer::BALANCE_PATH, file_set.join("\n"), Balancer.additional_headers(Balancer::TLB_MODULE_NAME_HEADER => submodule_name)).split("\n")
   end
 
   def self.assert_all_partitions_executed(submodule_name = nil)
     ensure_server_running
-    Balancer.get(Balancer::ALL_PARTITIONS_EXECUTED_ASSERTION_PATH, Balancer.additional_headers(Balancer::TLB_MODULE_NAME => submodule_name))
+    Balancer.get(Balancer::ALL_PARTITIONS_EXECUTED_ASSERTION_PATH, Balancer.additional_headers(Balancer::TLB_MODULE_NAME_HEADER => submodule_name))
   end
 
   def self.suite_result suite_name, result

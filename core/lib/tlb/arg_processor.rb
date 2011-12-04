@@ -29,6 +29,10 @@ module Tlb::ArgProcessor
       ARGV.delete_at(idx)
     end
   end
+
+  def self.reset!
+    @@args = { }
+  end
 end
 
 Tlb::ArgProcessor.parse!

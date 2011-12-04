@@ -6,6 +6,14 @@ describe Tlb::ArgProcessor do
   PRINT_ARGUMENTS_FILE = File.expand_path(File.join(File.dirname(__FILE__), '..', 'fixtures', 'print_arguments.rb'))
   PRINT_ALL_PROCESSED_ARGS_FILE = File.expand_path(File.join(File.dirname(__FILE__), '..', 'fixtures', 'print_all_processed_args.rb'))
 
+  before do
+    Tlb::ArgProcessor.reset!
+  end
+
+  after do
+    Tlb::ArgProcessor.reset!
+  end
+
   it "should load arguments given anywhere in the command line" do
     output = `ruby -I#{$core_lib} -r#{PRINT_ARGUMENTS_FILE} -r#{Tlb::ArgProcessor::FILE} #{PRINT_ARGUMENTS_FILE} -Arg:foo=bar -Arg:baz=quux hello -Arg:bar=baz buffalo! -Arg:bang=boom`
 

@@ -6,6 +6,14 @@ describe Tlb::TestUnit::TestTask do
     @path_to_mediator_inflection = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'lib', 'tlb', 'test_unit', 'mediator_inflection'))
   end
 
+  before do
+    Tlb::ArgProcessor.reset!
+  end
+
+  after do
+    Tlb::ArgProcessor.reset!
+  end
+
   it "should be a rake-testtask" do
     Tlb::TestUnit::TestTask.superclass.should == Rake::TestTask
   end
@@ -45,12 +53,12 @@ describe Tlb::TestUnit::TestTask do
       t.tlb_module_name = 'foo_bar_module'
       t.test_files = [DUMP_ENV_RUBY_SCRIPT]
     end
-    test_task.option_list.should include("-Arg:tlb_module_name=foo_bar_module")
+    test_task.option_list.should include("-Arg:#{Tlb::TLB_MODULE_NAME}=foo_bar_module")
   end
 
   it "should not set tlb_module_name when not given" do
     test_task = Tlb::TestUnit::TestTask.new do |t|
     end
-    test_task.option_list.should_not include("-Arg:tlb_module_name")
+    test_task.option_list.should_not include("-Arg:#{Tlb::TLB_MODULE_NAME}")
   end
 end

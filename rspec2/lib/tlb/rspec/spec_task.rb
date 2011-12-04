@@ -3,6 +3,8 @@ require 'tlb'
 require 'tlb/util'
 
 class Tlb::RSpec::SpecTask < RSpec::Core::RakeTask
+  attr_accessor :tlb_module_name
+
   def initialize *args
     super do |this|
       yield this if block_given?
@@ -14,7 +16,7 @@ class Tlb::RSpec::SpecTask < RSpec::Core::RakeTask
   alias_method :rspec_files_to_run, :files_to_run
 
   def files_to_run
-    balanced_and_reordered = Tlb.balance_and_order(relative_paths(rspec_files_to_run.to_a))
+    balanced_and_reordered = Tlb.balance_and_order(relative_paths(rspec_files_to_run.to_a), tlb_module_name)
     FileList[*balanced_and_reordered]
   end
 

@@ -24,7 +24,18 @@ describe Tlb::RSpec::SpecTask do
     @task = Tlb::RSpec::SpecTask.new
     Tlb.stubs(:start_unless_running)
     @task.pattern = spec_files_pattern
-    Tlb.stubs(:balance_and_order).with(['./tmp/tlb_rb_spec_dir/baz.rb', './tmp/tlb_rb_spec_dir/quux.rb', './tmp/tlb_rb_spec_dir/foo.rb', './tmp/tlb_rb_spec_dir/bar.rb', './tmp/tlb_rb_spec_dir/inner/dir/hello.rb']).returns(['./tmp/tlb_rb_spec_dir/inner/dir/hello.rb', './tmp/tlb_rb_spec_dir/foo.rb'])
+    Tlb.stubs(:balance_and_order).with(['./tmp/tlb_rb_spec_dir/baz.rb', './tmp/tlb_rb_spec_dir/quux.rb', './tmp/tlb_rb_spec_dir/foo.rb', './tmp/tlb_rb_spec_dir/bar.rb', './tmp/tlb_rb_spec_dir/inner/dir/hello.rb'], nil).returns(['./tmp/tlb_rb_spec_dir/inner/dir/hello.rb', './tmp/tlb_rb_spec_dir/foo.rb'])
+    balanced_list = @task.files_to_run
+    balanced_list.should be_a(Rake::FileList)
+    balanced_list.to_a.should == ['./tmp/tlb_rb_spec_dir/inner/dir/hello.rb', './tmp/tlb_rb_spec_dir/foo.rb']
+  end
+
+  it "should report configured tlb-module-name to balance-and-reorder call" do
+    @task = Tlb::RSpec::SpecTask.new
+    @task.tlb_module_name = 'my-rspec2-module'
+    Tlb.stubs(:start_unless_running)
+    @task.pattern = spec_files_pattern
+    Tlb.stubs(:balance_and_order).with(['./tmp/tlb_rb_spec_dir/baz.rb', './tmp/tlb_rb_spec_dir/quux.rb', './tmp/tlb_rb_spec_dir/foo.rb', './tmp/tlb_rb_spec_dir/bar.rb', './tmp/tlb_rb_spec_dir/inner/dir/hello.rb'], 'my-rspec2-module').returns(['./tmp/tlb_rb_spec_dir/inner/dir/hello.rb', './tmp/tlb_rb_spec_dir/foo.rb'])
     balanced_list = @task.files_to_run
     balanced_list.should be_a(Rake::FileList)
     balanced_list.to_a.should == ['./tmp/tlb_rb_spec_dir/inner/dir/hello.rb', './tmp/tlb_rb_spec_dir/foo.rb']

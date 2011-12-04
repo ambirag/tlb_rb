@@ -11,7 +11,18 @@ describe Tlb::SpecTask do
     @task = Tlb::SpecTask.new
     Tlb.stubs(:start_unless_running)
     @task.expects(:rspec_spec_file_list).returns(FileList['foo.rb', 'bar.rb', 'baz.rb', 'quux.rb'])
-    Tlb.stubs(:balance_and_order).with(['foo.rb', 'bar.rb', 'baz.rb', 'quux.rb']).returns(['quux.rb', 'foo.rb'])
+    Tlb.expects(:balance_and_order).with(['foo.rb', 'bar.rb', 'baz.rb', 'quux.rb'], nil).returns(['quux.rb', 'foo.rb'])
+    balanced_list = @task.spec_file_list
+    balanced_list.should be_a(Rake::FileList)
+    balanced_list.to_a.should == ['quux.rb', 'foo.rb']
+  end
+
+  it "should report tlb-module-name for balance-and-reorder call if configured" do
+    @task = Tlb::SpecTask.new
+    @task.tlb_module_name = 'my-rspec1-module'
+    Tlb.stubs(:start_unless_running)
+    @task.expects(:rspec_spec_file_list).returns(FileList['foo.rb', 'bar.rb', 'baz.rb', 'quux.rb'])
+    Tlb.expects(:balance_and_order).with(['foo.rb', 'bar.rb', 'baz.rb', 'quux.rb'], 'my-rspec1-module').returns(['quux.rb', 'foo.rb'])
     balanced_list = @task.spec_file_list
     balanced_list.should be_a(Rake::FileList)
     balanced_list.to_a.should == ['quux.rb', 'foo.rb']

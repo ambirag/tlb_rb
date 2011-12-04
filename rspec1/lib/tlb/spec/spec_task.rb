@@ -3,7 +3,7 @@ require 'tlb'
 require 'tlb/util'
 
 class Tlb::SpecTask < Spec::Rake::SpecTask
-  attr_accessor :tlb_out
+  attr_accessor :tlb_out, :tlb_module_name
 
   def initialize *args
     self.tlb_out = '/dev/null'
@@ -16,7 +16,7 @@ class Tlb::SpecTask < Spec::Rake::SpecTask
   alias_method :rspec_spec_file_list, :spec_file_list
 
   def spec_file_list
-    balanced_and_reordered = Tlb.balance_and_order(rspec_spec_file_list.to_a)
+    balanced_and_reordered = Tlb.balance_and_order(rspec_spec_file_list.to_a, tlb_module_name)
     FileList[*balanced_and_reordered]
   end
 end

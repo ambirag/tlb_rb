@@ -10,7 +10,7 @@ namespace :tlb do
     end
   end
 
-  task :ensure_all_partitions_executed do
+  task :ensure_all_partitions_executed => :start do
     tlb_module_name = ENV[Tlb::TLB_MODULE_NAME]
     Tlb.assert_all_partitions_executed(tlb_module_name)
   end

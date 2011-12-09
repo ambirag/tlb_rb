@@ -6,3 +6,5 @@ tlb-*.jar
 doc
 *.gem
 .emacs_project
+tlb_err_file
+tlb_out_file

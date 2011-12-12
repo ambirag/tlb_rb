@@ -24,7 +24,7 @@ describe Tlb do
   end
 
   def uncaught_exception message
-    "uncaught throw " + (RUBY_PLATFORM == "java" ? "`#{message.gsub('\n', '
+    "uncaught throw " + (RUBY_VERSION == "1.8.7" ? "`#{message.gsub('\n', '
 ')}'" : ('"' + message.gsub(/"/, '\"') + '"'))
   end
 

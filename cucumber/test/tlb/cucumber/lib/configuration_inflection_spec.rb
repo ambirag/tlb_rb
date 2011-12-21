@@ -68,4 +68,8 @@ describe Tlb::Cucumber::Lib::ConfigurationInflection do
     formatters = mediator.formatters("ignore")
     formatters.size.should == 2
   end
+
+  it "should point to the correct inflection file name" do
+    Tlb::Cucumber::Lib::ConfigurationInflection::FILE.should == File.expand_path(File.join(__FILE__, '..', '..', '..', '..', '..', 'lib', 'tlb', 'cucumber', 'lib', 'configuration_inflection.rb'))
+  end
 end

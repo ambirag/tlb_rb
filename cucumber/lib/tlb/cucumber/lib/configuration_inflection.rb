@@ -8,6 +8,7 @@ module Tlb
   module Cucumber
     module Lib
       module ConfigurationInflection
+        FILE = File.expand_path(__FILE__)
         include Tlb::Cucumber::Lib::TestSplitter
 
         def self.included base

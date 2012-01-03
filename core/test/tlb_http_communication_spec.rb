@@ -195,7 +195,9 @@ describe Tlb do
 
       describe "thats already running" do
         before do
+          ENV['TLB_PARTITION_NUMBER'] = '1'
           Tlb.start_server
+          Tlb.balance_and_order(["foo/bar.rb", "foo/baz.rb", "foo/quux.rb", "one.rb", "two.rb", "three.rb"]).should include("foo/bar.rb", "foo/baz.rb", "foo/quux.rb")
         end
 
         it "should publish suite result" do

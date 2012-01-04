@@ -6,7 +6,7 @@ describe Tlb::TestUnit::MediatorInflection do
     Test::Unit::UI::TestRunnerMediator.included_modules.should include(Tlb::TestUnit::MediatorInflection)
   end
 
-  it "should call splitter and observer on run_suite when included" do
+  it "should call observer with tests that splitter chooses on run_suite when included" do
     mediator = Class.new do
       attr_reader :run_suite_called
       def run_suite
@@ -16,12 +16,13 @@ describe Tlb::TestUnit::MediatorInflection do
       include Tlb::TestUnit::MediatorInflection
     end.new
 
-    mediator.expects(:register_observers) do
+    mediator.expects(:register_observers) do |args|
       mediator.run_suite_called.should be_false
-    end
+    end.with(['SuiteOne', 'SuiteTwo'])
+
     mediator.expects(:prune_suite) do
       mediator.run_suite_called.should be_false
-    end
+    end.returns(['SuiteOne', 'SuiteTwo'])
 
     mediator.run_suite.should == :run_suite_return
 

@@ -16,8 +16,7 @@ module Tlb::TestUnit::MediatorInflection
 
   module InstanceMethods
     def run_suite
-      register_observers
-      prune_suite
+      register_observers(prune_suite)
       run_suite_without_tlb
     end
   end

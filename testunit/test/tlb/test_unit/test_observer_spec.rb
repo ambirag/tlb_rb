@@ -9,8 +9,8 @@ describe Tlb::TestUnit::TestObserver do
     end.new(nil)
   end
 
-  it "should report suite time" do
-    @mediator.register_observers
+  it "should report suite time for suites chosen to execute" do
+    @mediator.register_observers(['SuiteOne', 'SuiteThree'])
 
     #suite one
     Time.stubs(:now).returns(Time.local( 2010, "jul", 16, 12, 5, 10))
@@ -40,7 +40,7 @@ describe Tlb::TestUnit::TestObserver do
     @mediator.notify_listeners(Test::Unit::TestCase::STARTED, 'test_two(SuiteTwo)')
     @mediator.notify_listeners(Test::Unit::TestCase::FINISHED, 'test_two(SuiteTwo)')
 
-    Time.expects(:now).returns(Time.local( 2010, "jul", 16, 12, 6, 25))
+    Time.stubs(:now).returns(Time.local( 2010, "jul", 16, 12, 6, 25))
     @mediator.notify_listeners(Test::Unit::TestSuite::FINISHED, 'SuiteTwo')
 
     #suite three
@@ -59,14 +59,14 @@ describe Tlb::TestUnit::TestObserver do
     @mediator.notify_listeners(Test::Unit::TestSuite::FINISHED, 'SuiteThree')
 
     Tlb.expects(:suite_time).with("SuiteOne", 19000)
-    Tlb.expects(:suite_time).with("SuiteTwo", 25000)
+    Tlb.expects(:suite_time).with("SuiteTwo", 25000).never
     Tlb.expects(:suite_time).with("SuiteThree", 100000)
 
     @mediator.notify_listeners(Test::Unit::UI::TestRunnerMediator::FINISHED, 10.3)#using some random number, no significance
   end
 
-  it "should report suite result" do
-    @mediator.register_observers
+  it "should report suite result for suites chosen to execute" do
+    @mediator.register_observers(['SuiteOne', 'SuiteTwo'])
 
     @mediator.notify_listeners(Test::Unit::TestSuite::STARTED, 'SuiteOne')
     @mediator.notify_listeners(Test::Unit::TestCase::STARTED, 'test_foo(SuiteOne)')
@@ -100,7 +100,7 @@ describe Tlb::TestUnit::TestObserver do
 
     Tlb.expects(:suite_result).with('SuiteOne', true)
     Tlb.expects(:suite_result).with('SuiteTwo', false)
-    Tlb.expects(:suite_result).with('SuiteThree', true)
+    Tlb.expects(:suite_result).with('SuiteThree', true).never
 
     @mediator.notify_listeners(Test::Unit::UI::TestRunnerMediator::FINISHED, 10.3)#using some random number, no significance
   end

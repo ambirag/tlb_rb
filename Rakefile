@@ -34,7 +34,9 @@ task :build_tlb do
   Dir.glob('tlb/target/tlb-server*').each { |file| FileUtils.copy(file, "core/test/") }
 end
 
-task :package => :test do
+task :package => [:test, :build_gems]
+
+task :build_gems do
   `gem build tlb-core.gemspec`
   `gem build tlb-rspec2.gemspec`
   `gem build tlb-testunit18.gemspec`

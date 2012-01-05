@@ -8,3 +8,8 @@ doc
 .emacs_project
 tlb_err_file
 tlb_out_file
+server/lib/*.sh
+server/lib/*.bat
+server/lib/*.cmd
+server/lib/tlb-server*.jar
+

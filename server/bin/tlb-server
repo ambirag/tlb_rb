@@ -3,6 +3,6 @@
 require 'rubygems'
 require 'tlb_server_runner'
 
-command = ARGV[0]
+command = ARGV[0] || '?'
 
 TlbServerRunner.new.send(command.strip)

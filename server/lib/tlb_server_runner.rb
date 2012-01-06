@@ -12,6 +12,7 @@ class TlbServerRunner
   end
 
   def method_missing action
+    ENV['CUSTOM_TLB_SERVER_COMMAND'] = 'tlb-server'
     exec_line = "#{command} #{exec_file} #{action}"
     Kernel.system(exec_line)
 

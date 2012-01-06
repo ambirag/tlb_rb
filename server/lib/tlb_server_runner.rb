@@ -13,6 +13,10 @@ class TlbServerRunner
 
   def method_missing action
     exec_line = "#{command} #{exec_file} #{action}"
-    system(exec_line)
+    Kernel.system(exec_line)
+
+    unless $?.success?
+      throw "'#{exec_line}' failed, please check stdout or stderr files."
+    end
   end
 end

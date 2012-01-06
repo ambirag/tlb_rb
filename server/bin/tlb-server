@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'rubygems'
-require 'tlb-server-runner'
+require 'tlb_server_runner'
 
 command = ARGV[0]
 

@@ -9,3 +9,8 @@ def add_module_to_path mod_root
     $LOAD_PATH << lib
   end
 end
+
+def uncaught_exception message
+  "uncaught throw " + (RUBY_VERSION == "1.8.7" ? "`#{message.gsub('\n', '
+')}'" : ('"' + message.gsub(/"/, '\"') + '"'))
+end

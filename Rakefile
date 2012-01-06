@@ -6,7 +6,7 @@ require 'spec/rake/spectask'
 task :test => 'test:all'
 
 namespace :test do
-  task :all => [:core, :rspec2, :testunit, :cucumber, :test_unit, :rspec1]
+  task :all => [:core, :rspec2, :testunit, :cucumber, :test_unit, :rspec1, :server]
 
   def specs_for *mod_names
     mod_names.each do |mod_name|
@@ -16,7 +16,7 @@ namespace :test do
     end
   end
 
-  specs_for :core, :rspec2, :cucumber, :testunit
+  specs_for :core, :rspec2, :cucumber, :testunit, :server
 
   Spec::Rake::SpecTask.new(:rspec1) do |t|
     t.spec_files = FileList['rspec1/test/**/*_spec.rb']

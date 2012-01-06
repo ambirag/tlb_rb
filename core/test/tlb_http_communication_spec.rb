@@ -23,11 +23,6 @@ describe Tlb do
     @process.stop_pumping
   end
 
-  def uncaught_exception message
-    "uncaught throw " + (RUBY_VERSION == "1.8.7" ? "`#{message.gsub('\n', '
-')}'" : ('"' + message.gsub(/"/, '\"') + '"'))
-  end
-
   describe "out and err file defaulting" do
     before do
       Tlb.server_running?.should be_false #precondition (the server must be started if not running)

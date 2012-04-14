@@ -1,6 +1,6 @@
-require 'cucumber/rake/task'
-require 'tlb/util'
-require 'tlb/cucumber/lib/configuration_inflection'
+require File.join('cucumber', 'rake', 'task')
+require File.join('tlb', 'util')
+require File.join('tlb' , 'cucumber' , 'lib' , 'configuration_inflection')
 
 module Tlb
   module Cucumber

@@ -1,8 +1,8 @@
 require 'rubygems'
-require 'cucumber/cli/configuration'
+require File.join('cucumber', 'cli', 'configuration')
 require 'tlb'
-require 'tlb/cucumber/lib/test_splitter'
-require 'tlb/cucumber/lib/run_data_formatter'
+require File.join('tlb', 'cucumber', 'lib', 'test_splitter')
+require File.join('tlb', 'cucumber', 'lib', 'run_data_formatter')
 
 module Tlb
   module Cucumber

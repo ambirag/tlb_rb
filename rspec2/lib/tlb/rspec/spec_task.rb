@@ -1,6 +1,6 @@
-require 'rspec/core/rake_task'
+require File.join('rspec', 'core', 'rake_task')
 require 'tlb'
-require 'tlb/util'
+require File.join('tlb', 'util')
 
 class Tlb::RSpec::SpecTask < RSpec::Core::RakeTask
   attr_accessor :tlb_module_name

@@ -1,5 +1,5 @@
 require 'tlb'
-require 'tlb/arg_processor'
+require File.join('tlb', 'arg_processor')
 
 module Tlb::TestUnit::TestSplitter
   def prune_suite

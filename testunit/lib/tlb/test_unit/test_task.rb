@@ -1,8 +1,8 @@
 require 'rake'
-require 'rake/testtask'
+require File.join('rake', 'testtask')
 require 'tlb'
-require 'tlb/util'
-require 'tlb/arg_processor'
+require File.join('tlb', 'util')
+require File.join('tlb', 'arg_processor')
 
 class Tlb::TestUnit::TestTask < Rake::TestTask
   attr_accessor :tlb_module_name

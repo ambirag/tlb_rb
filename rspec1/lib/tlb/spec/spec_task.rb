@@ -1,6 +1,6 @@
-require 'spec/rake/spectask'
+require File.join('spec', 'rake', 'spectask')
 require 'tlb'
-require 'tlb/util'
+require File.join('tlb', 'util')
 
 class Tlb::SpecTask < Spec::Rake::SpecTask
   attr_accessor :tlb_out, :tlb_module_name

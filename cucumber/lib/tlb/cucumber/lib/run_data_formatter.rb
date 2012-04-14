@@ -1,5 +1,5 @@
 require 'tlb'
-require 'tlb/run_data'
+require File.join('tlb', 'run_data')
 
 module Tlb
   module Cucumber

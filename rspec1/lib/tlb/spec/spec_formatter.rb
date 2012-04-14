@@ -1,4 +1,4 @@
-require 'spec/runner/formatter/silent_formatter'
+require File.join('spec', 'runner', 'formatter', 'silent_formatter')
 require 'rubygems'
 require 'tlb'
 

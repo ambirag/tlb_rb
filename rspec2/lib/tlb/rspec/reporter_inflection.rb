@@ -1,7 +1,7 @@
 require 'rubygems'
-require 'rspec/core/reporter'
+require File.join('rspec', 'core', 'reporter')
 require 'tlb'
-require 'tlb/rspec/spec_formatter'
+require File.join('tlb', 'rspec', 'spec_formatter')
 
 module Tlb::RSpec::ReporterInflection
   def self.included base

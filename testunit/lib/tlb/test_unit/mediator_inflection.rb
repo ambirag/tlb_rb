@@ -1,8 +1,8 @@
 require 'rubygems'
 require 'tlb'
-require 'tlb/test_unit/test_splitter'
-require 'tlb/test_unit/test_observer'
-require 'test/unit/ui/testrunnermediator'
+require File.join('tlb', 'test_unit', 'test_splitter')
+require File.join('tlb', 'test_unit', 'test_observer')
+require File.join('test', 'unit', 'ui', 'testrunnermediator')
 
 module Tlb::TestUnit::MediatorInflection
   def self.included base

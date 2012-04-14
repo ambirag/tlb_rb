@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'open4'
-require 'net/http'
+require File.join('net', 'http')
 require 'timeout'
 
 module Tlb

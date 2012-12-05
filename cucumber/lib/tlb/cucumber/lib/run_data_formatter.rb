@@ -30,7 +30,7 @@ module Tlb
         private
 
         def feature_file args
-          args[0].file
+          args[0].file.gsub('\\','/')
         end
       end
     end

@@ -1,7 +1,9 @@
 require 'rubygems'
 require 'open4'
+require 'open5'
 require 'net/http'
 require 'timeout'
+
 
 module Tlb
   TLB_OUT_FILE = 'TLB_OUT_FILE'
@@ -160,11 +162,15 @@ module Tlb
 
   class ForkBalancerProcess < BalancerProcess
     def start server_command
-      @pid, input, out, err = Open4.popen4(server_command)
-      unless (out)
-        raise "out was nil"
-      end
-      return Class.new(StreamPumper) do
+       
+	input,err,out, @t= open5(server_command)
+        @pid=@t.pid
+
+	unless (out)
+      	  raise "out was nil"
+      	end
+      
+	return Class.new(StreamPumper) do
         def data_available?
           not @stream.eof?
         end
@@ -178,7 +184,7 @@ module Tlb
     def die
       super
       @pid = nil
-      Process.wait
+      #Process.wait
     end
   end
 

@@ -181,12 +181,19 @@ module Tlb
       end, out, err
     end
 
-    def die
-      super
-      @pid = nil
-      #Process.wait
-    end
-  end
+  
+ def die
+   super
+   begin
+     @pid = nil
+     Process.wait
+   rescue Errno::ECHILD
+    puts "Got Errno::ECHILD"
+   rescue Exception => excep
+    raise excep
+   end
+ end	
+end
 
   class JavaBalancerProcess < BalancerProcess
     def start server_command
